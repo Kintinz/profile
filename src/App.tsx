@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
 type Locale = 'vi' | 'en'
@@ -697,6 +697,7 @@ function getInitialLocale(): Locale {
 function App() {
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
   const [locale, setLocale] = useState<Locale>(getInitialLocale)
+  const revealRootRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -708,6 +709,40 @@ function App() {
     window.localStorage.setItem('profile-locale', locale)
   }, [locale])
 
+  useEffect(() => {
+    const root = revealRootRef.current
+
+    if (!root) {
+      return
+    }
+
+    const items = Array.from(root.querySelectorAll<HTMLElement>('.reveal'))
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      items.forEach((item) => item.classList.add('is-visible'))
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.classList.toggle('is-visible', entry.isIntersecting)
+        })
+      },
+      {
+        root: null,
+        threshold: 0.18,
+        rootMargin: '0px 0px -8% 0px',
+      },
+    )
+
+    items.forEach((item) => observer.observe(item))
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [locale, theme])
+
   const copy = localeContent[locale]
   const themeLabel =
     theme === 'dark' ? copy.contact.themeToggleToLight : copy.contact.themeToggleToDark
@@ -715,7 +750,7 @@ function App() {
   const ThemeIcon = theme === 'dark' ? MoonIcon : SunIcon
 
   return (
-    <main className="page-shell" id="top">
+    <main ref={revealRootRef} className="page-shell" id="top">
       <header className="topbar reveal" style={{ animationDelay: '0.04s' }}>
         <p className="eyebrow">{copy.brand}</p>
         <div className="header-controls">
