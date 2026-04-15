@@ -94,6 +94,16 @@ type StreamIconKind =
   | 'docs'
   | 'branch'
   | 'screen'
+  | 'angular'
+  | 'sqlserver'
+  | 'csharp'
+  | 'dotnet'
+  | 'typescript'
+  | 'entityframework'
+  | 'material'
+  | 'postman'
+  | 'swagger'
+  | 'git'
 
 type StreamTone = 'blue' | 'cyan' | 'green' | 'amber' | 'violet' | 'rose'
 
@@ -654,8 +664,8 @@ const streamTracks: StreamItem[][] = [
     { label: 'HRM', icon: 'dashboard', tone: 'blue' },
     { label: 'BPM', icon: 'flow', tone: 'cyan' },
     { label: 'REST API', icon: 'api', tone: 'violet' },
-    { label: 'Angular', icon: 'code', tone: 'rose' },
-    { label: 'SQL Server', icon: 'database', tone: 'green' },
+    { label: 'Angular', icon: 'angular', tone: 'rose' },
+    { label: 'SQL Server', icon: 'sqlserver', tone: 'green' },
     { label: 'Security', icon: 'shield', tone: 'amber' },
     { label: 'Scalability', icon: 'speed', tone: 'blue' },
     { label: 'Workflow', icon: 'integration', tone: 'cyan' },
@@ -668,16 +678,16 @@ const streamTracks: StreamItem[][] = [
     { label: 'Performance', icon: 'speed', tone: 'blue' },
     { label: 'Dashboard', icon: 'dashboard', tone: 'cyan' },
     { label: 'Reliable UI', icon: 'screen', tone: 'green' },
-    { label: 'Backend', icon: 'database', tone: 'rose' },
+    { label: 'Backend', icon: 'dotnet', tone: 'rose' },
   ],
   [
-    { label: 'C#', icon: 'code', tone: 'violet' },
-    { label: 'ASP.NET Core', icon: 'api', tone: 'blue' },
-    { label: 'TypeScript', icon: 'code', tone: 'cyan' },
-    { label: 'Entity Framework', icon: 'database', tone: 'green' },
-    { label: 'Angular Material', icon: 'screen', tone: 'amber' },
-    { label: 'Postman', icon: 'tools', tone: 'rose' },
-    { label: 'Swagger', icon: 'docs', tone: 'violet' },
+    { label: 'C#', icon: 'csharp', tone: 'violet' },
+    { label: 'ASP.NET Core', icon: 'dotnet', tone: 'blue' },
+    { label: 'TypeScript', icon: 'typescript', tone: 'cyan' },
+    { label: 'Entity Framework', icon: 'entityframework', tone: 'green' },
+    { label: 'Angular Material', icon: 'material', tone: 'amber' },
+    { label: 'Postman', icon: 'postman', tone: 'rose' },
+    { label: 'Swagger', icon: 'swagger', tone: 'violet' },
     { label: 'Git', icon: 'branch', tone: 'blue' },
   ],
 ]
@@ -1493,6 +1503,26 @@ function StreamItemIcon({ kind }: { kind: StreamIconKind }) {
       return <BranchStreamIcon />
     case 'screen':
       return <ScreenStreamIcon />
+    case 'angular':
+      return <SiAngular className="stream-svg stream-brand-icon" aria-hidden="true" focusable="false" />
+    case 'sqlserver':
+      return <DiMsqlServer className="stream-svg stream-brand-icon" aria-hidden="true" focusable="false" />
+    case 'csharp':
+      return <SiSharp className="stream-svg stream-brand-icon" aria-hidden="true" focusable="false" />
+    case 'dotnet':
+      return <SiDotnet className="stream-svg stream-brand-icon" aria-hidden="true" focusable="false" />
+    case 'typescript':
+      return <SiTypescript className="stream-svg stream-brand-icon" aria-hidden="true" focusable="false" />
+    case 'entityframework':
+      return <SiFramework className="stream-svg stream-brand-icon" aria-hidden="true" focusable="false" />
+    case 'material':
+      return <SiMaterialdesign className="stream-svg stream-brand-icon" aria-hidden="true" focusable="false" />
+    case 'postman':
+      return <SiPostman className="stream-svg stream-brand-icon" aria-hidden="true" focusable="false" />
+    case 'swagger':
+      return <SiSwagger className="stream-svg stream-brand-icon" aria-hidden="true" focusable="false" />
+    case 'git':
+      return <SiGit className="stream-svg stream-brand-icon" aria-hidden="true" focusable="false" />
     default:
       return <FlowIcon />
   }
