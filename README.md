@@ -28,9 +28,9 @@ npm run build
 
 ## Deploy GitHub Pages
 
-Repo đã có workflow trong `.github/workflows/deploy.yml` để tự build và deploy lên GitHub Pages khi push lên `main`.
+Repo đã có workflow trong `.github/workflows/deploy.yml` để tự build và đẩy bản dựng lên nhánh `gh-pages` khi push lên `main`.
 
-Sau khi bật Pages trong Settings của repo, hãy chọn nguồn là **GitHub Actions** để GitHub phục vụ bản build từ thư mục `dist` thay vì file source ở root. Cách này tránh lỗi trang trắng do `src/main.tsx` không được transpile trên trình duyệt.
+Sau khi bật Pages trong Settings của repo, hãy chọn nguồn là **Deploy from a branch**, nhánh `gh-pages`, thư mục `/root`. Cách này phục vụ đúng bản build từ `dist` thay vì file source ở root.
 
 ## Cấu Trúc Chính
 
