@@ -879,6 +879,7 @@ function App() {
     theme === "dark"
       ? copy.contact.themeToggleToLight
       : copy.contact.themeToggleToDark;
+  const nextLocale = locale === "vi" ? "en" : "vi";
 
   const ThemeIcon = theme === "dark" ? MoonIcon : SunIcon;
 
@@ -909,10 +910,10 @@ function App() {
             <button
               className="toggle-pill"
               type="button"
-              onClick={() => setLocale(locale === "vi" ? "en" : "vi")}
+              onClick={() => setLocale(nextLocale)}
               aria-pressed={locale === "en"}
             >
-              <LanguageIcon locale={locale} />
+              <LanguageIcon locale={nextLocale} />
               {copy.contact.languageToggle}
             </button>
           </div>
@@ -1365,17 +1366,10 @@ function VietnamIcon() {
       aria-hidden="true"
       focusable="false"
     >
-      <circle
-        cx="12"
-        cy="12"
-        r="8.2"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.7"
-      />
+      <rect x="3.5" y="5" width="17" height="14" rx="2.6" fill="#da251d" />
       <path
-        d="M12 6.8 13.6 11h4.4l-3.6 2.6 1.4 4.2-3.8-2.7-3.8 2.7 1.4-4.2L6 11h4.4L12 6.8Z"
-        fill="currentColor"
+        d="M12 7.8 13.2 11.1h3.5l-2.8 2 1.1 3.2L12 14.3l-3 2 1.1-3.2-2.8-2h3.5L12 7.8Z"
+        fill="#ffde00"
       />
     </svg>
   );
@@ -1389,22 +1383,53 @@ function EnglishIcon() {
       aria-hidden="true"
       focusable="false"
     >
+      <defs>
+        <clipPath id="english-flag-clip">
+          <rect x="3.5" y="5" width="17" height="14" rx="2.6" />
+        </clipPath>
+      </defs>
+      <rect x="3.5" y="5" width="17" height="14" rx="2.6" fill="#b22234" />
+      <g clipPath="url(#english-flag-clip)">
+        <rect x="3.5" y="6.1" width="17" height="1.08" fill="#fff" />
+        <rect x="3.5" y="8.26" width="17" height="1.08" fill="#fff" />
+        <rect x="3.5" y="10.42" width="17" height="1.08" fill="#fff" />
+        <rect x="3.5" y="12.58" width="17" height="1.08" fill="#fff" />
+        <rect x="3.5" y="14.74" width="17" height="1.08" fill="#fff" />
+        <rect x="3.5" y="16.9" width="17" height="1.08" fill="#fff" />
+        <rect x="3.5" y="5" width="7.2" height="7.56" fill="#3c3b6e" />
+        <circle cx="4.8" cy="6.3" r="0.28" fill="#fff" />
+        <circle cx="6.1" cy="6.3" r="0.28" fill="#fff" />
+        <circle cx="7.4" cy="6.3" r="0.28" fill="#fff" />
+        <circle cx="8.7" cy="6.3" r="0.28" fill="#fff" />
+        <circle cx="10" cy="6.3" r="0.28" fill="#fff" />
+        <circle cx="5.45" cy="7.45" r="0.28" fill="#fff" />
+        <circle cx="6.75" cy="7.45" r="0.28" fill="#fff" />
+        <circle cx="8.05" cy="7.45" r="0.28" fill="#fff" />
+        <circle cx="9.35" cy="7.45" r="0.28" fill="#fff" />
+        <circle cx="4.8" cy="8.6" r="0.28" fill="#fff" />
+        <circle cx="6.1" cy="8.6" r="0.28" fill="#fff" />
+        <circle cx="7.4" cy="8.6" r="0.28" fill="#fff" />
+        <circle cx="8.7" cy="8.6" r="0.28" fill="#fff" />
+        <circle cx="10" cy="8.6" r="0.28" fill="#fff" />
+        <circle cx="5.45" cy="9.75" r="0.28" fill="#fff" />
+        <circle cx="6.75" cy="9.75" r="0.28" fill="#fff" />
+        <circle cx="8.05" cy="9.75" r="0.28" fill="#fff" />
+        <circle cx="9.35" cy="9.75" r="0.28" fill="#fff" />
+        <circle cx="4.8" cy="10.9" r="0.28" fill="#fff" />
+        <circle cx="6.1" cy="10.9" r="0.28" fill="#fff" />
+        <circle cx="7.4" cy="10.9" r="0.28" fill="#fff" />
+        <circle cx="8.7" cy="10.9" r="0.28" fill="#fff" />
+        <circle cx="10" cy="10.9" r="0.28" fill="#fff" />
+      </g>
       <rect
-        x="4"
+        x="3.5"
         y="5"
-        width="16"
+        width="17"
         height="14"
-        rx="2.5"
+        rx="2.6"
         fill="none"
-        stroke="currentColor"
-        strokeWidth="1.7"
-      />
-      <path
-        d="M4 9h16M10 5v14M14 5v14"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
+        stroke="rgba(15, 23, 42, 0.18)"
+        strokeWidth="0.9"
       />
     </svg>
   );
