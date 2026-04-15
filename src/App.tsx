@@ -1,5 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
+import { FaCss3Alt } from 'react-icons/fa6'
+import { DiMsqlServer } from 'react-icons/di'
+import {
+  SiAngular,
+  SiDocker,
+  SiDotnet,
+  SiFramework,
+  SiGit,
+  SiGithub,
+  SiHtml5,
+  SiMongodb,
+  SiPostman,
+  SiSharp,
+  SiSass,
+  SiSwagger,
+  SiTypescript,
+  SiMaterialdesign,
+} from 'react-icons/si'
 
 type Locale = 'vi' | 'en'
 type Theme = 'dark' | 'light'
@@ -108,7 +126,12 @@ type SidebarContent = {
   socialLabel: string
   socials: SocialLinkValue[]
   interestsLabel: string
-  interests: string[]
+  interests: InterestItem[]
+}
+
+type InterestItem = {
+  label: string
+  kind: 'music' | 'travel' | 'code'
 }
 
 type SocialLinkValue = {
@@ -253,7 +276,11 @@ const localeContent: Record<Locale, LocaleContent> = {
         { label: 'Twitter', value: 'x.com', href: 'https://x.com/', icon: 'twitter' },
       ],
       interestsLabel: 'Sở thích',
-      interests: ['Nghe nhạc', 'Du lịch', 'Tìm hiểu công nghệ mới'],
+      interests: [
+        { label: 'Nghe nhạc', kind: 'music' },
+        { label: 'Du lịch', kind: 'travel' },
+        { label: 'Tìm hiểu công nghệ mới', kind: 'code' },
+      ],
     },
     objective: {
       eyebrow: 'Mục tiêu nghề nghiệp',
@@ -464,7 +491,11 @@ const localeContent: Record<Locale, LocaleContent> = {
         { label: 'Twitter', value: 'x.com', href: 'https://x.com/', icon: 'twitter' },
       ],
       interestsLabel: 'Interests',
-      interests: ['Listening to music', 'Travel', 'Exploring new technology'],
+      interests: [
+        { label: 'Listening to music', kind: 'music' },
+        { label: 'Travel', kind: 'travel' },
+        { label: 'Exploring new technology', kind: 'code' },
+      ],
     },
     objective: {
       eyebrow: 'Career Objective',
@@ -726,13 +757,13 @@ function App() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          entry.target.classList.toggle('is-visible', entry.isIntersecting)
+          entry.target.classList.toggle('is-visible', entry.isIntersecting || entry.intersectionRatio > 0)
         })
       },
       {
         root: null,
-        threshold: 0.18,
-        rootMargin: '0px 0px -8% 0px',
+        threshold: 0.01,
+        rootMargin: '0px 0px -2% 0px',
       },
     )
 
@@ -868,10 +899,10 @@ function App() {
               <span>{copy.sidebar.interestsLabel}</span>
             </h4>
             <div className="chip-list compact">
-              {copy.sidebar.interests.map((item, index) => (
-                <span key={item} className="interest-chip">
-                  <InterestIcon index={index} />
-                  <span>{item}</span>
+              {copy.sidebar.interests.map((item) => (
+                <span key={item.label} className={`interest-chip interest-chip-${item.kind}`}>
+                  <InterestIcon kind={item.kind} />
+                  <span>{item.label}</span>
                 </span>
               ))}
             </div>
@@ -890,13 +921,19 @@ function App() {
               </div>
             </div>
             <div className="copy-grid">
-              {copy.objective.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
+              {copy.objective.body.map((paragraph, index) => (
+                <p key={paragraph} className="reveal" style={{ transitionDelay: `${0.02 + index * 0.04}s` }}>
+                  {paragraph}
+                </p>
               ))}
             </div>
             <div className="feature-grid">
-              {copy.objective.pillars.map((item) => (
-                <article key={item.title} className="mini-card">
+              {copy.objective.pillars.map((item, index) => (
+                <article
+                  key={item.title}
+                  className="mini-card reveal"
+                  style={{ transitionDelay: `${0.06 + index * 0.06}s` }}
+                >
                   <h4>{item.title}</h4>
                   <p>{item.text}</p>
                 </article>
@@ -915,13 +952,20 @@ function App() {
               </div>
             </div>
             <div className="skill-grid">
-              {copy.skills.groups.map((group) => (
-                <article key={group.title} className="mini-card skill-card">
+              {copy.skills.groups.map((group, index) => (
+                <article
+                  key={group.title}
+                  className="mini-card skill-card reveal"
+                  style={{ transitionDelay: `${0.06 + index * 0.08}s` }}
+                >
                   <h4>{group.title}</h4>
                   <ul>
                     {group.items.map((item) => (
-                      <li key={item.label}>
-                        {item.label}
+                      <li key={item.label} className="skill-item">
+                        <span className={`skill-item-icon skill-item-icon-${item.icon}`} aria-hidden="true">
+                          <SkillItemIcon kind={item.icon} />
+                        </span>
+                        <span className="skill-item-label">{item.label}</span>
                       </li>
                     ))}
                   </ul>
@@ -941,8 +985,12 @@ function App() {
               </div>
             </div>
             <div className="timeline-grid">
-              {copy.experience.timeline.map((entry) => (
-                <article key={entry.title} className="timeline-card">
+              {copy.experience.timeline.map((entry, index) => (
+                <article
+                  key={entry.title}
+                  className="timeline-card reveal"
+                  style={{ transitionDelay: `${0.06 + index * 0.08}s` }}
+                >
                   <span>{entry.period}</span>
                   <h4>{entry.title}</h4>
                   <p>{entry.text}</p>
@@ -962,8 +1010,12 @@ function App() {
               </div>
             </div>
             <div className="project-grid">
-              {copy.projects.items.map((project) => (
-                <article key={project.name} className="mini-card project-card">
+              {copy.projects.items.map((project, index) => (
+                <article
+                  key={project.name}
+                  className="mini-card project-card reveal"
+                  style={{ transitionDelay: `${0.06 + index * 0.08}s` }}
+                >
                   <p className="project-kicker">Featured work</p>
                   <h4>{project.name}</h4>
                   <p>{project.summary}</p>
@@ -988,8 +1040,12 @@ function App() {
               </div>
             </div>
             <div className="education-grid">
-              {copy.education.items.map((item) => (
-                <article key={item.title} className="timeline-card">
+              {copy.education.items.map((item, index) => (
+                <article
+                  key={item.title}
+                  className="timeline-card reveal"
+                  style={{ transitionDelay: `${0.06 + index * 0.08}s` }}
+                >
                   <span>{item.period}</span>
                   <h4>{item.title}</h4>
                   <p>{item.text}</p>
@@ -1009,8 +1065,12 @@ function App() {
               </div>
             </div>
             <div className="timeline-grid">
-              {copy.achievements.items.map((item) => (
-                <article key={item.title} className="timeline-card">
+              {copy.achievements.items.map((item, index) => (
+                <article
+                  key={item.title}
+                  className="timeline-card reveal"
+                  style={{ transitionDelay: `${0.06 + index * 0.08}s` }}
+                >
                   <span>{item.period}</span>
                   <h4>{item.title}</h4>
                   <p>{item.text}</p>
@@ -1182,16 +1242,115 @@ function ContactLinkIcon({ kind }: { kind: 'phone' | 'mail' }) {
   return kind === 'phone' ? <PhoneGlyph className="contact-glyph" /> : <MailGlyph className="contact-glyph" />
 }
 
-function InterestIcon({ index }: { index: number }) {
-  if (index === 0) {
-    return <MusicGlyph className="interest-glyph" />
+function SkillItemIcon({ kind }: { kind: SkillIconKind }) {
+  switch (kind) {
+    case 'csharp':
+      return <SiSharp className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'dotnet':
+      return <SiDotnet className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'entity':
+      return <SiFramework className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'api':
+      return <SkillApiIcon />
+    case 'jwt':
+      return <SkillShieldIcon />
+    case 'angular':
+      return <SiAngular className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'typescript':
+      return <SiTypescript className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'html':
+      return <SiHtml5 className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'css':
+      return <FaCss3Alt className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'scss':
+      return <SiSass className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'material':
+      return <SiMaterialdesign className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'rxjs':
+      return <SkillRxjsIcon />
+    case 'sql':
+      return <DiMsqlServer className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'mongo':
+      return <SiMongodb className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'git':
+      return <SiGit className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'github':
+      return <SiGithub className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'postman':
+      return <SiPostman className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'swagger':
+      return <SiSwagger className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    case 'docker':
+      return <SiDocker className="skill-brand-icon" aria-hidden="true" focusable="false" />
+    default:
+      return <SiFramework className="skill-brand-icon" aria-hidden="true" focusable="false" />
+  }
+}
+
+function SkillApiIcon() {
+  return (
+    <SvgGlyph>
+      <path d="M6 8h12M6 12h8M6 16h10" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </SvgGlyph>
+  )
+}
+
+function SkillShieldIcon() {
+  return (
+    <SvgGlyph>
+      <path d="M12 4.8 18 7v4.5c0 3.8-2.6 6.3-6 8-3.4-1.7-6-4.2-6-8V7l6-2.2Z" fill="currentColor" />
+      <path d="m9.4 12 1.7 1.7 3.6-4" fill="none" stroke="#fff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </SvgGlyph>
+  )
+}
+
+function SkillRxjsIcon() {
+  return (
+    <SvgGlyph>
+      <path d="M12 4.8c2 0 3.8.5 5.3 1.5l-1.5 2.1c-1-.7-2.3-1.1-3.8-1.1-2.8 0-4.8 1.7-5.7 4.3-.5 1.4-.5 2.9 0 4.3.9 2.6 2.9 4.3 5.7 4.3 1.5 0 2.8-.4 3.8-1.1l1.5 2.1C15.8 19.7 14 20.2 12 20.2c-4.2 0-7.5-2.6-8.8-6.5-.7-2-.7-4.3 0-6.3C4.5 7.4 7.8 4.8 12 4.8Z" fill="#1d4ed8" opacity="0.85" />
+      <circle cx="8.2" cy="8.2" r="1.7" fill="#e11d48" />
+      <circle cx="15.8" cy="8.2" r="1.7" fill="#a855f7" />
+      <circle cx="12" cy="15.5" r="1.7" fill="#06b6d4" />
+    </SvgGlyph>
+  )
+}
+
+function InterestIcon({ kind }: { kind: InterestItem['kind'] }) {
+  if (kind === 'music') {
+    return (
+      <span className="interest-icon-wrap interest-icon-music" aria-hidden="true">
+        <span className="interest-vinyl" />
+        <span className="interest-needle" />
+        <span className="interest-tone-note">
+          <MusicGlyph className="interest-glyph" />
+        </span>
+      </span>
+    )
   }
 
-  if (index === 1) {
-    return <TravelGlyph className="interest-glyph" />
+  if (kind === 'travel') {
+    return (
+      <span className="interest-icon-wrap interest-icon-travel" aria-hidden="true">
+        <span className="interest-flight-arc" />
+        <span className="interest-plane-track">
+          <TravelGlyph className="interest-glyph" />
+        </span>
+        <span className="interest-landing" />
+      </span>
+    )
   }
 
-  return <CodeGlyph className="interest-glyph" />
+  return (
+    <span className="interest-icon-wrap interest-icon-code" aria-hidden="true">
+      <span className="interest-code-frame">
+        <span className="interest-code-lines" />
+        <span className="interest-code-cursor" />
+      </span>
+      <span className="interest-code-mark">
+        <CodeGlyph className="interest-glyph" />
+      </span>
+    </span>
+  )
 }
 
 function BadgeIcon({ tone, children }: { tone: 'blue' | 'cyan' | 'green' | 'amber' | 'violet' | 'rose'; children: React.ReactNode }) {
