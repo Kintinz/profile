@@ -30,7 +30,7 @@ npm run build
 
 Repo đã có workflow trong `.github/workflows/deploy.yml` để tự build và deploy lên GitHub Pages khi push lên `main`.
 
-Sau khi bật Pages trong Settings của repo, GitHub sẽ phục vụ bản build từ thư mục `dist` thay vì file source ở root, tránh lỗi trang trắng do `src/main.tsx` không được transpile trên trình duyệt.
+Sau khi bật Pages trong Settings của repo, hãy chọn nguồn là **GitHub Actions** để GitHub phục vụ bản build từ thư mục `dist` thay vì file source ở root. Cách này tránh lỗi trang trắng do `src/main.tsx` không được transpile trên trình duyệt.
 
 ## Cấu Trúc Chính
 
