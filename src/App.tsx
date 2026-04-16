@@ -3,8 +3,11 @@ import "./App.css";
 import profilePortrait from "./assets/avatar.jpg";
 import {
   FaCss3Alt,
+  FaCompactDisc,
   FaFacebookF,
   FaInstagram,
+  FaLaptopCode,
+  FaPlane,
   FaXTwitter,
 } from "react-icons/fa6";
 import { DiMsqlServer } from "react-icons/di";
@@ -146,12 +149,15 @@ type SidebarContent = {
   interests: InterestItem[];
   analysisLabel: string;
   analysis: SkillAnalysisItem[];
+  analysisModes: Record<SkillChartMode, string>;
 };
 
 type SkillAnalysisItem = {
   label: string;
   value: number;
 };
+
+type SkillChartMode = "bars" | "radar" | "donut" | "line";
 
 type InterestItem = {
   label: string;
@@ -327,9 +333,9 @@ const localeContent: Record<Locale, LocaleContent> = {
       ],
       interestsLabel: "Sở thích",
       interests: [
-        { label: "Nghe nhạc", kind: "music" },
-        { label: "Du lịch", kind: "travel" },
-        { label: "Tìm hiểu công nghệ mới", kind: "code" },
+        { label: "Đĩa nhạc", kind: "music" },
+        { label: "Máy bay", kind: "travel" },
+        { label: "Tìm hiểu công nghệ", kind: "code" },
       ],
       analysisLabel: "Phân tích trình độ chuyên môn",
       analysis: [
@@ -338,6 +344,12 @@ const localeContent: Record<Locale, LocaleContent> = {
         { label: "SQL Server", value: 78 },
         { label: "Workflow & BPM", value: 88 },
       ],
+      analysisModes: {
+        bars: "Cột",
+        radar: "Radar",
+        donut: "Vòng tròn",
+        line: "Đường",
+      },
     },
     objective: {
       eyebrow: "Mục tiêu nghề nghiệp",
@@ -596,9 +608,9 @@ const localeContent: Record<Locale, LocaleContent> = {
       ],
       interestsLabel: "Interests",
       interests: [
-        { label: "Listening to music", kind: "music" },
-        { label: "Travel", kind: "travel" },
-        { label: "Exploring new technology", kind: "code" },
+        { label: "Vinyl Record", kind: "music" },
+        { label: "Airplane", kind: "travel" },
+        { label: "Tech Exploration", kind: "code" },
       ],
       analysisLabel: "Professional skill analysis",
       analysis: [
@@ -607,6 +619,12 @@ const localeContent: Record<Locale, LocaleContent> = {
         { label: "SQL Server", value: 78 },
         { label: "Workflow & BPM", value: 88 },
       ],
+      analysisModes: {
+        bars: "Bars",
+        radar: "Radar",
+        donut: "Donut",
+        line: "Line",
+      },
     },
     objective: {
       eyebrow: "Career Objective",
@@ -848,6 +866,7 @@ function App() {
   const [locale, setLocale] = useState<Locale>(getInitialLocale);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [analysisMode, setAnalysisMode] = useState<SkillChartMode>("bars");
   const revealRootRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -1021,7 +1040,6 @@ function App() {
                 aria-label={themeLabel}
               >
                 <ThemeIcon />
-                <span className="toggle-label">{themeLabel}</span>
               </button>
               <button
                 className="toggle-pill"
@@ -1170,22 +1188,22 @@ function App() {
               <SidebarBadgeIcon kind="personal" />
               <span>{copy.sidebar.analysisLabel}</span>
             </h4>
-            <div className="skill-analysis-list" role="list" aria-label={copy.sidebar.analysisLabel}>
-              {copy.sidebar.analysis.map((item) => (
-                <article key={item.label} className="skill-analysis-item" role="listitem">
-                  <div className="skill-analysis-row">
-                    <span className="skill-analysis-label">{item.label}</span>
-                    <strong className="skill-analysis-value">{item.value}%</strong>
-                  </div>
-                  <div className="skill-analysis-bar" aria-hidden="true">
-                    <span
-                      className="skill-analysis-fill"
-                      style={{ width: `${item.value}%` }}
-                    />
-                  </div>
-                </article>
+            <div className="skill-chart-controls" role="tablist" aria-label={copy.sidebar.analysisLabel}>
+              {(
+                ["bars", "radar", "donut", "line"] as SkillChartMode[]
+              ).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  className={`skill-chart-tab ${analysisMode === mode ? "is-active" : ""}`}
+                  onClick={() => setAnalysisMode(mode)}
+                  aria-pressed={analysisMode === mode}
+                >
+                  {copy.sidebar.analysisModes[mode]}
+                </button>
               ))}
             </div>
+            <SkillAnalysisChart mode={analysisMode} items={copy.sidebar.analysis} />
           </section>
         </aside>
 
@@ -1990,43 +2008,23 @@ function SkillRxjsIcon() {
 function InterestIcon({ kind }: { kind: InterestItem["kind"] }) {
   if (kind === "music") {
     return (
-      <span
-        className="interest-icon-wrap interest-icon-music"
-        aria-hidden="true"
-      >
-        <span className="interest-vinyl" />
-        <span className="interest-needle" />
-        <span className="interest-tone-note">
-          <MusicGlyph className="interest-glyph" />
-        </span>
+      <span className="interest-icon-wrap interest-icon-music" aria-hidden="true">
+        <FaCompactDisc className="glyph-svg interest-glyph" />
       </span>
     );
   }
 
   if (kind === "travel") {
     return (
-      <span
-        className="interest-icon-wrap interest-icon-travel"
-        aria-hidden="true"
-      >
-        <span className="interest-flight-arc" />
-        <span className="interest-plane-track">
-          <TravelGlyph className="interest-glyph" />
-        </span>
-        <span className="interest-landing" />
+      <span className="interest-icon-wrap interest-icon-travel" aria-hidden="true">
+        <FaPlane className="glyph-svg interest-glyph" />
       </span>
     );
   }
 
   return (
     <span className="interest-icon-wrap interest-icon-code" aria-hidden="true">
-      <span className="interest-code-frame">
-        <span className="interest-code-lines" />
-        <span className="interest-code-cursor" />
-      </span>
-      <span className="interest-code-mark">
-        <CodeGlyph className="interest-glyph" />
-      </span>
+      <FaLaptopCode className="glyph-svg interest-glyph" />
     </span>
   );
 }
@@ -2039,6 +2037,363 @@ function BadgeIcon({
   children: React.ReactNode;
 }) {
   return <span className={`badge-icon badge-tone-${tone}`}>{children}</span>;
+}
+
+function SkillAnalysisChart({
+  mode,
+  items,
+}: {
+  mode: SkillChartMode;
+  items: SkillAnalysisItem[];
+}) {
+  const palette = ["#38bdf8", "#8b5cf6", "#22c55e", "#f59e0b"];
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const focusedIndex = hoveredIndex ?? selectedIndex;
+  const activeItem = items[focusedIndex] ?? items[0];
+  const average = Math.round(
+    items.reduce((total, item) => total + item.value, 0) / items.length,
+  );
+
+  const handleActivate = (index: number) => {
+    setSelectedIndex(index);
+    setHoveredIndex(index);
+  };
+
+  const clearHover = () => {
+    setHoveredIndex(null);
+  };
+
+  if (mode === "bars") {
+    return (
+      <div className="skill-analysis-chart skill-analysis-bars">
+        <div className="skill-analysis-list" role="list" aria-label="Skill bars">
+          {items.map((item, index) => (
+            <button
+              key={item.label}
+              type="button"
+              className={`skill-analysis-item skill-analysis-item-button ${
+                focusedIndex === index ? "is-active" : ""
+              }`}
+              role="listitem"
+              aria-pressed={focusedIndex === index}
+              onClick={() => handleActivate(index)}
+              onPointerEnter={() => setHoveredIndex(index)}
+              onPointerLeave={clearHover}
+              onFocus={() => setHoveredIndex(index)}
+              onBlur={clearHover}
+            >
+              <div className="skill-analysis-row">
+                <span className="skill-analysis-label">{item.label}</span>
+                <strong className="skill-analysis-value">{item.value}%</strong>
+              </div>
+              <div className="skill-analysis-bar" aria-hidden="true">
+                <span
+                  className="skill-analysis-fill"
+                  style={{ width: `${item.value}%` }}
+                />
+              </div>
+            </button>
+          ))}
+        </div>
+        <div className="skill-analysis-focus" aria-live="polite">
+          <strong>{activeItem.value}%</strong>
+          <span>{activeItem.label}</span>
+          <small>Hover or tap a bar to inspect it</small>
+        </div>
+      </div>
+    );
+  }
+
+  if (mode === "radar") {
+    const polygonPoints = buildRadarPoints(items, 88, 120, 120);
+    const outlinePoints = buildRadarPoints(
+      items.map(() => ({ label: "", value: 100 })),
+      88,
+      120,
+      120,
+    );
+
+    return (
+      <div className="skill-analysis-chart skill-analysis-radar">
+        <svg className="skill-radar-svg" viewBox="0 0 240 240" aria-hidden="true">
+          <polygon className="skill-radar-grid" points={outlinePoints} />
+          <polygon
+            className="skill-radar-grid skill-radar-grid-inner"
+            points={buildRadarPoints(
+              items.map(() => ({ label: "", value: 66 })),
+              58,
+              120,
+              120,
+            )}
+          />
+          <polygon className="skill-radar-area" points={polygonPoints} />
+          {items.map((item, index) => {
+            const point = buildRadarPoint(item.value, 92, 120, 120, index, items.length);
+            return (
+              <g
+                key={item.label}
+                className={focusedIndex === index ? "is-active" : ""}
+                role="button"
+                tabIndex={0}
+                aria-pressed={focusedIndex === index}
+                onClick={() => handleActivate(index)}
+                onPointerEnter={() => setHoveredIndex(index)}
+                onPointerLeave={clearHover}
+                onFocus={() => setHoveredIndex(index)}
+                onBlur={clearHover}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    handleActivate(index);
+                  }
+                }}
+              >
+                <line
+                  className={`skill-radar-axis ${focusedIndex === index ? "is-active" : ""}`}
+                  x1="120"
+                  y1="120"
+                  x2={point.x}
+                  y2={point.y}
+                />
+                <circle
+                  className="skill-radar-hit"
+                  cx={point.x}
+                  cy={point.y}
+                  r="10"
+                />
+                <circle
+                  className={`skill-radar-dot ${focusedIndex === index ? "is-active" : ""}`}
+                  cx={point.x}
+                  cy={point.y}
+                  r="4.5"
+                />
+              </g>
+            );
+          })}
+        </svg>
+        <div className="skill-radar-legend" role="list" aria-label="Radar legend">
+          {items.map((item, index) => (
+            <button
+              key={item.label}
+              type="button"
+              className={`skill-radar-legend-item ${focusedIndex === index ? "is-active" : ""}`}
+              role="listitem"
+              aria-pressed={focusedIndex === index}
+              onClick={() => handleActivate(index)}
+              onPointerEnter={() => setHoveredIndex(index)}
+              onPointerLeave={clearHover}
+              onFocus={() => setHoveredIndex(index)}
+              onBlur={clearHover}
+            >
+              <span
+                className="skill-radar-swatch"
+                style={{ background: palette[index % palette.length] }}
+                aria-hidden="true"
+              />
+              <span>{item.label}</span>
+              <strong>{item.value}%</strong>
+            </button>
+          ))}
+        </div>
+        <div className="skill-analysis-focus" aria-live="polite">
+          <strong>{activeItem.value}%</strong>
+          <span>{activeItem.label}</span>
+          <small>Hover or tap a point to inspect it</small>
+        </div>
+        <div className="skill-analysis-summary">
+          <strong>{average}%</strong>
+          <span>Average proficiency</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (mode === "donut") {
+    const total = items.reduce((sum, item) => sum + item.value, 0) || 1;
+    let current = 0;
+
+    const segments = items.map((item, index) => {
+      const start = current;
+      current += (item.value / total) * 100;
+      const end = current;
+      return `${palette[index % palette.length]} ${start}% ${end}%`;
+    });
+
+    return (
+      <div className="skill-analysis-chart skill-analysis-donut">
+        <div
+          className="skill-donut-ring"
+          style={{ background: `conic-gradient(${segments.join(", ")})` }}
+        >
+          <div className="skill-donut-center">
+            <strong>{activeItem.value}%</strong>
+            <span>{activeItem.label}</span>
+          </div>
+        </div>
+        <div className="skill-donut-legend" role="list" aria-label="Skill donut legend">
+          {items.map((item, index) => (
+            <button
+              key={item.label}
+              type="button"
+              className={`skill-donut-legend-item ${focusedIndex === index ? "is-active" : ""}`}
+              role="listitem"
+              aria-pressed={focusedIndex === index}
+              onClick={() => handleActivate(index)}
+              onPointerEnter={() => setHoveredIndex(index)}
+              onPointerLeave={clearHover}
+              onFocus={() => setHoveredIndex(index)}
+              onBlur={clearHover}
+            >
+              <span
+                className="skill-donut-swatch"
+                style={{ background: palette[index % palette.length] }}
+                aria-hidden="true"
+              />
+              <span>{item.label}</span>
+              <strong>{item.value}%</strong>
+            </button>
+          ))}
+        </div>
+        <div className="skill-analysis-focus" aria-live="polite">
+          <strong>{activeItem.value}%</strong>
+          <span>{activeItem.label}</span>
+          <small>Hover or tap a segment to inspect it</small>
+        </div>
+      </div>
+    );
+  }
+
+  const linePoints = items.map((item, index) =>
+    buildLinePoint(item.value, index, items.length, 20, 220, 20, 116),
+  );
+  const linePath = linePoints.map((point) => `${point.x},${point.y}`).join(" ");
+  const areaBaseline = 138;
+  const areaPath = `M ${linePoints[0].x} ${areaBaseline} ${linePath} L ${linePoints[linePoints.length - 1].x} ${areaBaseline} Z`;
+
+  return (
+    <div className="skill-analysis-chart skill-analysis-line">
+      <svg className="skill-line-svg" viewBox="0 0 240 160" aria-hidden="true">
+        <defs>
+          <linearGradient id="skill-line-fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="rgba(56, 189, 248, 0.45)" />
+            <stop offset="100%" stopColor="rgba(56, 189, 248, 0.02)" />
+          </linearGradient>
+        </defs>
+        <path className="skill-line-area" d={areaPath} />
+        <polyline className="skill-line-path" points={linePath} />
+        {linePoints.map((point, index) => (
+          <g
+            key={items[index].label}
+            role="button"
+            tabIndex={0}
+            aria-pressed={focusedIndex === index}
+            onClick={() => handleActivate(index)}
+            onPointerEnter={() => setHoveredIndex(index)}
+            onPointerLeave={clearHover}
+            onFocus={() => setHoveredIndex(index)}
+            onBlur={clearHover}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                handleActivate(index);
+              }
+            }}
+            className={focusedIndex === index ? "is-active" : ""}
+          >
+            <circle className="skill-line-hit" cx={point.x} cy={point.y} r="11" />
+            <circle className={`skill-line-dot ${focusedIndex === index ? "is-active" : ""}`} cx={point.x} cy={point.y} r="4.6" />
+          </g>
+        ))}
+      </svg>
+      <div className="skill-line-legend" role="list" aria-label="Trend line legend">
+        {items.map((item, index) => (
+          <button
+            key={item.label}
+            type="button"
+            className={`skill-line-legend-item ${focusedIndex === index ? "is-active" : ""}`}
+            role="listitem"
+            aria-pressed={focusedIndex === index}
+            onClick={() => handleActivate(index)}
+            onPointerEnter={() => setHoveredIndex(index)}
+            onPointerLeave={clearHover}
+            onFocus={() => setHoveredIndex(index)}
+            onBlur={clearHover}
+          >
+            <span
+              className="skill-line-swatch"
+              style={{ background: palette[index % palette.length] }}
+              aria-hidden="true"
+            />
+            <span>{item.label}</span>
+            <strong>{item.value}%</strong>
+          </button>
+        ))}
+      </div>
+      <div className="skill-analysis-focus" aria-live="polite">
+        <strong>{activeItem.value}%</strong>
+        <span>{activeItem.label}</span>
+        <small>Hover or tap a point to inspect it</small>
+      </div>
+      <div className="skill-line-summary">
+        <strong>{average}%</strong>
+        <span>Trend line overview</span>
+      </div>
+    </div>
+  );
+}
+
+function buildRadarPoint(
+  value: number,
+  radius: number,
+  centerX: number,
+  centerY: number,
+  index: number,
+  count: number,
+) {
+  const angle = -Math.PI / 2 + (Math.PI * 2 * index) / count;
+  const effectiveRadius = (radius * value) / 100;
+  const x = centerX + Math.cos(angle) * effectiveRadius;
+  const y = centerY + Math.sin(angle) * effectiveRadius;
+
+  return {
+    x: Number(x.toFixed(1)),
+    y: Number(y.toFixed(1)),
+  };
+}
+
+function buildRadarPoints(
+  items: SkillAnalysisItem[],
+  radius: number,
+  centerX: number,
+  centerY: number,
+) {
+  return items
+    .map((item, index) => {
+      const point = buildRadarPoint(item.value, radius, centerX, centerY, index, items.length);
+      return `${point.x},${point.y}`;
+    })
+    .join(" ");
+}
+
+function buildLinePoint(
+  value: number,
+  index: number,
+  count: number,
+  left: number,
+  right: number,
+  top: number,
+  bottom: number,
+) {
+  const usableWidth = right - left;
+  const usableHeight = bottom - top;
+  const x = count === 1 ? (left + right) / 2 : left + (usableWidth * index) / (count - 1);
+  const y = bottom - (usableHeight * value) / 100;
+
+  return {
+    x: Number(x.toFixed(1)),
+    y: Number(y.toFixed(1)),
+  };
 }
 
 function CompassGlyph() {
@@ -2219,45 +2574,6 @@ function GlobeGlyph() {
         stroke="currentColor"
         strokeWidth="1.4"
         strokeLinecap="round"
-      />
-    </SvgGlyph>
-  );
-}
-
-function MusicGlyph({ className }: { className?: string }) {
-  return (
-    <SvgGlyph className={className}>
-      <path
-        d="M14 5v10.2a2.8 2.8 0 1 1-1.8-2.7V8l7-1.4V15a2.8 2.8 0 1 1-1.8-2.7V6.8L14 7.6V5Z"
-        fill="currentColor"
-      />
-    </SvgGlyph>
-  );
-}
-
-function TravelGlyph({ className }: { className?: string }) {
-  return (
-    <SvgGlyph className={className}>
-      <path
-        d="M12 4.5 17.5 8 12 19.5 6.5 8 12 4.5Z"
-        fill="currentColor"
-        opacity="0.9"
-      />
-      <circle cx="12" cy="8.2" r="1.4" fill="#fff" />
-    </SvgGlyph>
-  );
-}
-
-function CodeGlyph({ className }: { className?: string }) {
-  return (
-    <SvgGlyph className={className}>
-      <path
-        d="M9 7 5 12l4 5M15 7l4 5-4 5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
       />
     </SvgGlyph>
   );
