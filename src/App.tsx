@@ -144,6 +144,13 @@ type SidebarContent = {
   socials: SocialLinkValue[];
   interestsLabel: string;
   interests: InterestItem[];
+  analysisLabel: string;
+  analysis: SkillAnalysisItem[];
+};
+
+type SkillAnalysisItem = {
+  label: string;
+  value: number;
 };
 
 type InterestItem = {
@@ -323,6 +330,13 @@ const localeContent: Record<Locale, LocaleContent> = {
         { label: "Nghe nhạc", kind: "music" },
         { label: "Du lịch", kind: "travel" },
         { label: "Tìm hiểu công nghệ mới", kind: "code" },
+      ],
+      analysisLabel: "Phân tích trình độ chuyên môn",
+      analysis: [
+        { label: "Backend .NET", value: 92 },
+        { label: "Angular / Frontend", value: 84 },
+        { label: "SQL Server", value: 78 },
+        { label: "Workflow & BPM", value: 88 },
       ],
     },
     objective: {
@@ -586,6 +600,13 @@ const localeContent: Record<Locale, LocaleContent> = {
         { label: "Travel", kind: "travel" },
         { label: "Exploring new technology", kind: "code" },
       ],
+      analysisLabel: "Professional skill analysis",
+      analysis: [
+        { label: "Backend .NET", value: 92 },
+        { label: "Angular / Frontend", value: 84 },
+        { label: "SQL Server", value: 78 },
+        { label: "Workflow & BPM", value: 88 },
+      ],
     },
     objective: {
       eyebrow: "Career Objective",
@@ -825,6 +846,8 @@ function getInitialLocale(): Locale {
 function App() {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
   const [locale, setLocale] = useState<Locale>(getInitialLocale);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const revealRootRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -836,6 +859,43 @@ function App() {
     document.documentElement.lang = locale;
     window.localStorage.setItem("profile-locale", locale);
   }, [locale]);
+
+  useEffect(() => {
+    const handleViewportChange = () => {
+      if (window.matchMedia("(min-width: 721px)").matches) {
+        setMobileNavOpen(false);
+      }
+    };
+
+    handleViewportChange();
+    window.addEventListener("resize", handleViewportChange);
+
+    return () => {
+      window.removeEventListener("resize", handleViewportChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const isMobileDrawer = window.matchMedia("(max-width: 720px)").matches;
+    document.body.style.overflow = mobileNavOpen && isMobileDrawer ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileNavOpen]);
+
+  useEffect(() => {
+    const updateScrollTopVisibility = () => {
+      setShowScrollTop(window.scrollY > 320);
+    };
+
+    updateScrollTopVisibility();
+    window.addEventListener("scroll", updateScrollTopVisibility, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", updateScrollTopVisibility);
+    };
+  }, []);
 
   useEffect(() => {
     const root = revealRootRef.current;
@@ -885,37 +945,94 @@ function App() {
 
   return (
     <main ref={revealRootRef} className="page-shell" id="top">
-      <header className="topbar reveal" style={{ animationDelay: "0.04s" }}>
-        <p className="eyebrow">{copy.brand}</p>
-        <div className="header-controls">
-          <nav aria-label="Điều hướng nhanh" className="quick-nav">
-            <a href="#objective">{copy.nav.objective}</a>
-            <a href="#skills">{copy.nav.skills}</a>
-            <a href="#experience">{copy.nav.experience}</a>
-            <a href="#projects">{copy.nav.projects}</a>
-            <a href="#education">{copy.nav.education}</a>
-            <a href="#contact">{copy.nav.contact}</a>
-          </nav>
-          <div className="utility-actions">
-            <button
-              className="toggle-pill"
-              type="button"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-pressed={theme === "light"}
-              aria-label={themeLabel}
-            >
-              <ThemeIcon />
-              <span className="sr-only">{themeLabel}</span>
-            </button>
-            <button
-              className="toggle-pill"
-              type="button"
-              onClick={() => setLocale(nextLocale)}
-              aria-pressed={locale === "en"}
-            >
-              <LanguageIcon locale={nextLocale} />
-              {copy.contact.languageToggle}
-            </button>
+      {showScrollTop ? (
+        <button
+          className="scroll-top-button"
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Cuộn lên đầu trang"
+        >
+          <UpArrowIcon />
+        </button>
+      ) : null}
+      <button
+        className="mobile-rail-button"
+        type="button"
+        onClick={() => setMobileNavOpen((value) => !value)}
+        aria-expanded={mobileNavOpen}
+        aria-controls="mobile-nav-panel"
+        aria-label={mobileNavOpen ? "Đóng thanh menu" : "Mở thanh menu"}
+      >
+        {mobileNavOpen ? <CloseIcon /> : <MenuIcon />}
+        <span className="sr-only">
+          {mobileNavOpen ? "Đóng thanh menu" : "Mở thanh menu"}
+        </span>
+      </button>
+      {mobileNavOpen ? (
+        <button
+          className="mobile-menu-backdrop is-visible"
+          type="button"
+          aria-label="Đóng menu"
+          onClick={() => setMobileNavOpen(false)}
+        />
+      ) : null}
+      <header
+        className={`topbar reveal ${mobileNavOpen ? "topbar-open" : "topbar-closed"}`}
+        style={{ animationDelay: "0.04s" }}
+      >
+        <div className="topbar-shell">
+          <div className="topbar-brand-row">
+            <p className="eyebrow topbar-brand">{copy.brand}</p>
+            <div className="topbar-ghost-spacer" aria-hidden="true" />
+          </div>
+          <div id="mobile-nav-panel" className="header-controls">
+            <nav aria-label="Điều hướng nhanh" className="quick-nav">
+              <a href="#objective" onClick={() => setMobileNavOpen(false)}>
+                <SectionBadgeIcon kind="objective" />
+                <span className="nav-label">{copy.nav.objective}</span>
+              </a>
+              <a href="#skills" onClick={() => setMobileNavOpen(false)}>
+                <SectionBadgeIcon kind="skills" />
+                <span className="nav-label">{copy.nav.skills}</span>
+              </a>
+              <a href="#experience" onClick={() => setMobileNavOpen(false)}>
+                <SectionBadgeIcon kind="experience" />
+                <span className="nav-label">{copy.nav.experience}</span>
+              </a>
+              <a href="#projects" onClick={() => setMobileNavOpen(false)}>
+                <SectionBadgeIcon kind="projects" />
+                <span className="nav-label">{copy.nav.projects}</span>
+              </a>
+              <a href="#education" onClick={() => setMobileNavOpen(false)}>
+                <SectionBadgeIcon kind="education" />
+                <span className="nav-label">{copy.nav.education}</span>
+              </a>
+              <a href="#contact" onClick={() => setMobileNavOpen(false)}>
+                <SectionBadgeIcon kind="contact" />
+                <span className="nav-label">{copy.nav.contact}</span>
+              </a>
+            </nav>
+            <div className="utility-actions">
+              <button
+                className="toggle-pill theme-toggle-pill"
+                type="button"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                aria-pressed={theme === "light"}
+                aria-label={themeLabel}
+              >
+                <ThemeIcon />
+                <span className="toggle-label">{themeLabel}</span>
+              </button>
+              <button
+                className="toggle-pill"
+                type="button"
+                onClick={() => setLocale(nextLocale)}
+                aria-pressed={locale === "en"}
+              >
+                <LanguageIcon locale={nextLocale} />
+                <span className="toggle-label">{copy.contact.languageToggle}</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -1041,6 +1158,32 @@ function App() {
                   <InterestIcon kind={item.kind} />
                   <span>{item.label}</span>
                 </span>
+              ))}
+            </div>
+          </section>
+
+          <section
+            className="panel sidebar-panel skill-analysis-panel reveal"
+            style={{ animationDelay: "0.3s" }}
+          >
+            <h4 className="sidebar-title-with-icon">
+              <SidebarBadgeIcon kind="personal" />
+              <span>{copy.sidebar.analysisLabel}</span>
+            </h4>
+            <div className="skill-analysis-list" role="list" aria-label={copy.sidebar.analysisLabel}>
+              {copy.sidebar.analysis.map((item) => (
+                <article key={item.label} className="skill-analysis-item" role="listitem">
+                  <div className="skill-analysis-row">
+                    <span className="skill-analysis-label">{item.label}</span>
+                    <strong className="skill-analysis-value">{item.value}%</strong>
+                  </div>
+                  <div className="skill-analysis-bar" aria-hidden="true">
+                    <span
+                      className="skill-analysis-fill"
+                      style={{ width: `${item.value}%` }}
+                    />
+                  </div>
+                </article>
               ))}
             </div>
           </section>
@@ -1348,6 +1491,64 @@ function MoonIcon() {
         fill="none"
         stroke="currentColor"
         strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function MenuIcon() {
+  return (
+    <svg
+      className="toggle-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M4 7h16M4 12h16M4 17h16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg
+      className="toggle-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M6 6 18 18M18 6 6 18"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function UpArrowIcon() {
+  return (
+    <svg
+      className="toggle-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M12 5 6.5 10.5m5.5-5.5 5.5 5.5M12 5v14"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
         strokeLinejoin="round"
       />
     </svg>
