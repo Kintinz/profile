@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
+import { BackdropScene } from "./BackdropScene";
 import profilePortrait from "./assets/avatar.jpg";
 import {
   FaCss3Alt,
@@ -964,6 +965,7 @@ function App() {
 
   return (
     <main ref={revealRootRef} className="page-shell" id="top">
+      <BackdropScene theme={theme} />
       {showScrollTop ? (
         <button
           className="scroll-top-button"
