@@ -279,9 +279,9 @@ const localeContent: Record<Locale, LocaleContent> = {
     },
     stream: {
       eyebrow: "Dòng thông tin kỹ thuật",
-      title: "Luồng hệ thống chạy liên tục",
+      title: "Nhịp vận hành của hệ thống",
       subtitle:
-        "Các tín hiệu nghiệp vụ, công nghệ và quy trình vận hành được mô phỏng như một data stream.",
+        "những mảng tôi thường làm việc cùng nhau: nghiệp vụ, công nghệ và cách hệ thống vận hành trong thực tế.",
     },
     sidebar: {
       eyebrow: "Thông tin cá nhân",
@@ -515,7 +515,7 @@ const localeContent: Record<Locale, LocaleContent> = {
       eyebrow: "Liên hệ",
       title:
         "Sẵn sàng cho những cơ hội phù hợp với hệ thống doanh nghiệp và sản phẩm nội bộ.",
-      body: "Nếu cần, tôi có thể tiếp tục chỉnh trang này theo phong cách corporate hơn nữa, hoặc thay ảnh chân dung thật, thêm link GitHub, LinkedIn và bố cục CV một trang.",
+      body: "Tôi đang tìm các vị trí phát triển hệ thống nội bộ, HRM/BPM hoặc backend .NET. Nếu dự án của bạn cần một người tập trung vào độ ổn định, khả năng mở rộng và tích hợp nghiệp vụ, hãy liên hệ qua email hoặc số điện thoại bên dưới.",
       email: "datduongnvty@gmail.com",
       phone: "0393828088",
       themeToggleToLight: "Đổi sang sáng",
@@ -554,9 +554,9 @@ const localeContent: Record<Locale, LocaleContent> = {
     },
     stream: {
       eyebrow: "Technical stream",
-      title: "Continuous system flow",
+      title: "The system's working rhythm",
       subtitle:
-        "Business signals, technologies, and process operations presented as an infinite data stream.",
+        "This section brings together the parts I work with most often: business needs, technology, and how the system behaves in practice.",
     },
     sidebar: {
       eyebrow: "Personal Information",
@@ -1009,27 +1009,21 @@ function App() {
           <div id="mobile-nav-panel" className="header-controls">
             <nav aria-label="Điều hướng nhanh" className="quick-nav">
               <a href="#objective" onClick={() => setMobileNavOpen(false)}>
-                <SectionBadgeIcon kind="objective" />
                 <span className="nav-label">{copy.nav.objective}</span>
               </a>
               <a href="#skills" onClick={() => setMobileNavOpen(false)}>
-                <SectionBadgeIcon kind="skills" />
                 <span className="nav-label">{copy.nav.skills}</span>
               </a>
               <a href="#experience" onClick={() => setMobileNavOpen(false)}>
-                <SectionBadgeIcon kind="experience" />
                 <span className="nav-label">{copy.nav.experience}</span>
               </a>
               <a href="#projects" onClick={() => setMobileNavOpen(false)}>
-                <SectionBadgeIcon kind="projects" />
                 <span className="nav-label">{copy.nav.projects}</span>
               </a>
               <a href="#education" onClick={() => setMobileNavOpen(false)}>
-                <SectionBadgeIcon kind="education" />
                 <span className="nav-label">{copy.nav.education}</span>
               </a>
               <a href="#contact" onClick={() => setMobileNavOpen(false)}>
-                <SectionBadgeIcon kind="contact" />
                 <span className="nav-label">{copy.nav.contact}</span>
               </a>
             </nav>
