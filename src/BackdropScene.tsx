@@ -40,8 +40,19 @@ type TransitionState = {
 
 const DARK_BG = new THREE.Color(0x04050d);
 const LIGHT_BG = new THREE.Color(0xf8eedf);
+const SUN_PATH_DURATION = 52;
 
-const PALETTES: Record<Theme, { core: THREE.ColorRepresentation; dust: THREE.ColorRepresentation; sunCore: THREE.ColorRepresentation; sunCorona: THREE.ColorRepresentation; sunRays: THREE.ColorRepresentation; star: THREE.ColorRepresentation }> = {
+const PALETTES: Record<
+  Theme,
+  {
+    core: THREE.ColorRepresentation;
+    dust: THREE.ColorRepresentation;
+    sunCore: THREE.ColorRepresentation;
+    sunCorona: THREE.ColorRepresentation;
+    sunRays: THREE.ColorRepresentation;
+    star: THREE.ColorRepresentation;
+  }
+> = {
   dark: {
     core: 0xfff4d8,
     dust: 0x4a2b77,
@@ -66,7 +77,9 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const rigRef = useRef<Rig | null>(null);
   const themeRef = useRef<Theme>(theme);
-  const transitionRef = useRef<TransitionState>({ value: theme === "light" ? 1 : 0 });
+  const transitionRef = useRef<TransitionState>({
+    value: theme === "light" ? 1 : 0,
+  });
   const tweenRef = useRef<gsap.core.Tween | null>(null);
 
   useEffect(() => {
@@ -93,7 +106,9 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
     renderer.setClearColor(0x000000, 0);
     mount.appendChild(renderer.domElement);
 
-    const background = new THREE.Color().copy(DARK_BG).lerp(LIGHT_BG, initialMix);
+    const background = new THREE.Color()
+      .copy(DARK_BG)
+      .lerp(LIGHT_BG, initialMix);
     scene.background = background;
 
     const palette = PALETTES[theme];
@@ -168,13 +183,16 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
       [1, "rgba(255,244,214,0)"],
     ]);
 
-    const coreTexture = createSprite([
-      [0, "rgba(255,255,255,1)"],
-      [0.18, "rgba(255,248,228,0.98)"],
-      [0.36, "rgba(255,220,140,0.85)"],
-      [0.62, "rgba(203,169,255,0.38)"],
-      [1, "rgba(203,169,255,0)"],
-    ], 256);
+    const coreTexture = createSprite(
+      [
+        [0, "rgba(255,255,255,1)"],
+        [0.18, "rgba(255,248,228,0.98)"],
+        [0.36, "rgba(255,220,140,0.85)"],
+        [0.62, "rgba(203,169,255,0.38)"],
+        [1, "rgba(203,169,255,0)"],
+      ],
+      256,
+    );
 
     const dustTexture = createSprite([
       [0, "rgba(255,255,255,0.48)"],
@@ -199,10 +217,15 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
         const twist = radius * 0.013 + armIndex * 0.1;
         const jitter = (1 - radiusSeed) * 120;
         const angle = armAngle + twist + (Math.random() - 0.5) * 0.65;
-        const height = (Math.random() - 0.5) * 100 * (1 - radiusSeed) + Math.sin(radius * 0.012) * 18;
+        const height =
+          (Math.random() - 0.5) * 100 * (1 - radiusSeed) +
+          Math.sin(radius * 0.012) * 18;
 
-        positions[index * 3] = Math.cos(angle) * radius + (Math.random() - 0.5) * jitter;
-        positions[index * 3 + 1] = Math.sin(angle) * radius * 0.42 + (Math.random() - 0.5) * jitter * 0.5;
+        positions[index * 3] =
+          Math.cos(angle) * radius + (Math.random() - 0.5) * jitter;
+        positions[index * 3 + 1] =
+          Math.sin(angle) * radius * 0.42 +
+          (Math.random() - 0.5) * jitter * 0.5;
         positions[index * 3 + 2] = height;
 
         color.set(armColors[armIndex]);
@@ -214,7 +237,10 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
       }
 
       const geometry = new THREE.BufferGeometry();
-      geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positions, 3),
+      );
       geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
       geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
 
@@ -244,8 +270,11 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
         const angle = Math.random() * Math.PI * 2;
         const spread = 140 + Math.random() * 120;
 
-        positions[index * 3] = Math.cos(angle) * radiusSeed + (Math.random() - 0.5) * spread;
-        positions[index * 3 + 1] = Math.sin(angle) * radiusSeed * 0.46 + (Math.random() - 0.5) * spread * 0.35;
+        positions[index * 3] =
+          Math.cos(angle) * radiusSeed + (Math.random() - 0.5) * spread;
+        positions[index * 3 + 1] =
+          Math.sin(angle) * radiusSeed * 0.46 +
+          (Math.random() - 0.5) * spread * 0.35;
         positions[index * 3 + 2] = (Math.random() - 0.5) * 250;
 
         const fade = 0.1 + Math.random() * 0.32;
@@ -256,7 +285,10 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
       }
 
       const geometry = new THREE.BufferGeometry();
-      geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positions, 3),
+      );
       geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
       geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
 
@@ -307,11 +339,14 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
     ].forEach(({ x, y, size, color: glowColor }) => {
       const sprite = new THREE.Sprite(
         new THREE.SpriteMaterial({
-          map: createSprite([
-            [0, glowColor],
-            [0.36, glowColor],
-            [1, "rgba(0,0,0,0)"],
-          ], 256),
+          map: createSprite(
+            [
+              [0, glowColor],
+              [0.36, glowColor],
+              [1, "rgba(0,0,0,0)"],
+            ],
+            256,
+          ),
           transparent: true,
           opacity: 0.85,
           depthWrite: false,
@@ -332,7 +367,10 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
     const coreGeometry = new THREE.BufferGeometry();
     coreGeometry.setAttribute(
       "position",
-      new THREE.Float32BufferAttribute([0, 0, 0, 24, 12, 0, -18, -12, 0, 10, -22, 0], 3),
+      new THREE.Float32BufferAttribute(
+        [0, 0, 0, 24, 12, 0, -18, -12, 0, 10, -22, 0],
+        3,
+      ),
     );
 
     const coreMaterial = new THREE.PointsMaterial({
@@ -351,12 +389,15 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
 
     const outerGlow = new THREE.Sprite(
       new THREE.SpriteMaterial({
-        map: createSprite([
-          [0, "rgba(255,255,255,0.5)"],
-          [0.2, "rgba(255,231,180,0.42)"],
-          [0.45, "rgba(168,85,247,0.18)"],
-          [1, "rgba(168,85,247,0)"],
-        ], 256),
+        map: createSprite(
+          [
+            [0, "rgba(255,255,255,0.5)"],
+            [0.2, "rgba(255,231,180,0.42)"],
+            [0.45, "rgba(168,85,247,0.18)"],
+            [1, "rgba(168,85,247,0)"],
+          ],
+          256,
+        ),
         color: palette.core,
         transparent: true,
         opacity: 0.75,
@@ -369,12 +410,15 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
 
     const warmGlow = new THREE.Sprite(
       new THREE.SpriteMaterial({
-        map: createSprite([
-          [0, "rgba(255,255,255,0.6)"],
-          [0.18, "rgba(255,205,92,0.4)"],
-          [0.46, "rgba(255,145,0,0.14)"],
-          [1, "rgba(255,145,0,0)"],
-        ], 256),
+        map: createSprite(
+          [
+            [0, "rgba(255,255,255,0.6)"],
+            [0.18, "rgba(255,205,92,0.4)"],
+            [0.46, "rgba(255,145,0,0.14)"],
+            [1, "rgba(255,145,0,0)"],
+          ],
+          256,
+        ),
         color: palette.core,
         transparent: true,
         opacity: 0.72,
@@ -387,26 +431,35 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
     galaxyGroup.add(warmGlow);
 
     const sunTextures = {
-      core: createSprite([
-        [0, "rgba(255,255,255,1)"],
-        [0.16, "rgba(255,252,235,0.98)"],
-        [0.34, "rgba(255,224,150,0.92)"],
-        [0.58, "rgba(255,171,59,0.64)"],
-        [1, "rgba(255,171,59,0)"],
-      ], 320),
-      corona: createSprite([
-        [0, "rgba(255,255,255,0.74)"],
-        [0.18, "rgba(255,236,184,0.56)"],
-        [0.38, "rgba(255,201,92,0.42)"],
-        [0.64, "rgba(255,140,0,0.22)"],
-        [1, "rgba(255,140,0,0)"],
-      ], 512),
-      glow: createSprite([
-        [0, "rgba(255,255,255,0.36)"],
-        [0.22, "rgba(255,236,183,0.32)"],
-        [0.48, "rgba(255,201,92,0.18)"],
-        [1, "rgba(255,201,92,0)"],
-      ], 512),
+      core: createSprite(
+        [
+          [0, "rgba(255,255,255,1)"],
+          [0.16, "rgba(255,252,235,0.98)"],
+          [0.34, "rgba(255,224,150,0.92)"],
+          [0.58, "rgba(255,171,59,0.64)"],
+          [1, "rgba(255,171,59,0)"],
+        ],
+        320,
+      ),
+      corona: createSprite(
+        [
+          [0, "rgba(255,255,255,0.74)"],
+          [0.18, "rgba(255,236,184,0.56)"],
+          [0.38, "rgba(255,201,92,0.42)"],
+          [0.64, "rgba(255,140,0,0.22)"],
+          [1, "rgba(255,140,0,0)"],
+        ],
+        512,
+      ),
+      glow: createSprite(
+        [
+          [0, "rgba(255,255,255,0.36)"],
+          [0.22, "rgba(255,236,183,0.32)"],
+          [0.48, "rgba(255,201,92,0.18)"],
+          [1, "rgba(255,201,92,0)"],
+        ],
+        512,
+      ),
       ray: createRayTexture(),
     };
 
@@ -495,7 +548,11 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
       );
       const angle = (index / 24) * Math.PI * 2;
       const radius = 280 + Math.random() * 140;
-      sparkle.position.set(Math.cos(angle) * radius, Math.sin(angle) * radius * 0.72, 0);
+      sparkle.position.set(
+        Math.cos(angle) * radius,
+        Math.sin(angle) * radius * 0.72,
+        0,
+      );
       const size = 8 + Math.random() * 14;
       sparkle.scale.set(size, size, 1);
       sunGroup.add(sparkle);
@@ -524,7 +581,15 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
       sunSparkles,
       sunRays,
       rayGeometry,
-      textures: [starTexture, coreTexture, dustTexture, sunTextures.core, sunTextures.corona, sunTextures.glow, sunTextures.ray],
+      textures: [
+        starTexture,
+        coreTexture,
+        dustTexture,
+        sunTextures.core,
+        sunTextures.corona,
+        sunTextures.glow,
+        sunTextures.ray,
+      ],
       background,
     };
     rigRef.current = rig;
@@ -543,7 +608,8 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
       const sweepFront = targetIsLight
         ? lerp(2.2, -2.2, mix)
         : lerp(-2.2, 2.2, 1 - mix);
-      const revealAt = (xValue: number) => smoothstep(xValue, sweepFront - 0.34, sweepFront + 0.34);
+      const revealAt = (xValue: number) =>
+        smoothstep(xValue, sweepFront - 0.34, sweepFront + 0.34);
       background.copy(DARK_BG).lerp(LIGHT_BG, mix);
       scene.background = background;
 
@@ -580,7 +646,8 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
       sunHalo.material.opacity = 0.72 * sunReveal;
       sunRays.forEach((ray, index) => {
         const base = index === sunRays.length - 1 ? 0.12 : 0.14 + index * 0.02;
-        (ray.material as THREE.Material & { opacity: number }).opacity = sunReveal * base;
+        (ray.material as THREE.Material & { opacity: number }).opacity =
+          sunReveal * base;
       });
       sunSparkles.forEach((sparkle, index) => {
         const base = 0.12 + (index % 4) * 0.04;
@@ -604,7 +671,9 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
       pointerY = (event.clientY / window.innerHeight) * 2 - 1;
     };
 
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("pointermove", handlePointerMove, {
+      passive: true,
+    });
 
     const animate = () => {
       const mix = transitionRef.current.value;
@@ -612,7 +681,8 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
       applyFrame(mix);
 
       galaxyGroup.rotation.z = 0.08 + frame * 0.14;
-      galaxyGroup.rotation.x = Math.sin(frame * 0.6) * (0.03 * (1 - mix * 0.35));
+      galaxyGroup.rotation.x =
+        Math.sin(frame * 0.6) * (0.03 * (1 - mix * 0.35));
       halo.rotation.z = -frame * 0.08;
       starField.rotation.z = -frame * 0.018;
       nebulaGroup.rotation.z = frame * 0.01;
@@ -621,18 +691,41 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
 
       const sunPulse = 1 + Math.sin(frame * 2.2) * 0.02;
       sunCore.scale.setScalar((220 + 120 * mix) * sunPulse);
-      sunCorona.scale.setScalar((520 + 260 * mix) * (1 + Math.sin(frame * 1.7) * 0.012));
-      sunHalo.scale.setScalar((860 + 320 * mix) * (1 + Math.sin(frame * 1.3) * 0.01));
+      sunCorona.scale.setScalar(
+        (520 + 260 * mix) * (1 + Math.sin(frame * 1.7) * 0.012),
+      );
+      sunHalo.scale.setScalar(
+        (860 + 320 * mix) * (1 + Math.sin(frame * 1.3) * 0.01),
+      );
 
       const galaxyOffsetX = pointerX * 18;
       const galaxyOffsetY = -pointerY * 10;
-      galaxyGroup.position.x = lerp(galaxyGroup.position.x, lerp(0, 8, mix) + galaxyOffsetX, 0.08);
-      galaxyGroup.position.y = lerp(galaxyGroup.position.y, lerp(0, 12, mix) + galaxyOffsetY, 0.08);
+      galaxyGroup.position.x = lerp(
+        galaxyGroup.position.x,
+        lerp(0, 8, mix) + galaxyOffsetX,
+        0.08,
+      );
+      galaxyGroup.position.y = lerp(
+        galaxyGroup.position.y,
+        lerp(0, 12, mix) + galaxyOffsetY,
+        0.08,
+      );
 
+      const sunPathProgress = (frame / SUN_PATH_DURATION) % 1;
+      const sunDriftX = lerp(240, -260, sunPathProgress);
+      const sunDriftY = lerp(-220, 160, sunPathProgress);
       const sunOffsetX = pointerX * 16;
       const sunOffsetY = -pointerY * 12;
-      sunGroup.position.x = lerp(sunGroup.position.x, lerp(620, 560, mix) + sunOffsetX, 0.08);
-      sunGroup.position.y = lerp(sunGroup.position.y, lerp(-260, -44, mix) + sunOffsetY, 0.08);
+      sunGroup.position.x = lerp(
+        sunGroup.position.x,
+        lerp(620, 560, mix) + sunDriftX + sunOffsetX,
+        0.08,
+      );
+      sunGroup.position.y = lerp(
+        sunGroup.position.y,
+        lerp(-260, -44, mix) + sunDriftY + sunOffsetY,
+        0.08,
+      );
 
       renderer.render(scene, camera);
 
@@ -703,7 +796,9 @@ export function BackdropScene({ theme }: BackdropSceneProps) {
     themeRef.current = theme;
 
     const target = theme === "light" ? 1 : 0;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     tweenRef.current?.kill();
 
     if (reduceMotion) {

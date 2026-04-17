@@ -35,16 +35,56 @@
   inset: 0;
   opacity: 0.62;
   background-image:
-    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.92) 0 0.9px, transparent 1px),
-    radial-gradient(circle at 18% 72%, rgba(255, 255, 255, 0.8) 0 0.8px, transparent 1px),
-    radial-gradient(circle at 28% 34%, rgba(255, 255, 255, 0.88) 0 0.9px, transparent 1px),
-    radial-gradient(circle at 38% 84%, rgba(255, 255, 255, 0.72) 0 0.8px, transparent 1px),
-    radial-gradient(circle at 44% 22%, rgba(255, 255, 255, 0.96) 0 1.1px, transparent 1.4px),
-    radial-gradient(circle at 56% 48%, rgba(255, 255, 255, 0.82) 0 0.9px, transparent 1px),
-    radial-gradient(circle at 64% 16%, rgba(255, 255, 255, 0.88) 0 0.8px, transparent 1px),
-    radial-gradient(circle at 72% 38%, rgba(255, 255, 255, 0.9) 0 1px, transparent 1.3px),
-    radial-gradient(circle at 82% 72%, rgba(255, 255, 255, 0.84) 0 0.9px, transparent 1px),
-    radial-gradient(circle at 90% 24%, rgba(255, 255, 255, 0.88) 0 0.8px, transparent 1px);
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(255, 255, 255, 0.92) 0 0.9px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 18% 72%,
+      rgba(255, 255, 255, 0.8) 0 0.8px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 28% 34%,
+      rgba(255, 255, 255, 0.88) 0 0.9px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 38% 84%,
+      rgba(255, 255, 255, 0.72) 0 0.8px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 44% 22%,
+      rgba(255, 255, 255, 0.96) 0 1.1px,
+      transparent 1.4px
+    ),
+    radial-gradient(
+      circle at 56% 48%,
+      rgba(255, 255, 255, 0.82) 0 0.9px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 64% 16%,
+      rgba(255, 255, 255, 0.88) 0 0.8px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 72% 38%,
+      rgba(255, 255, 255, 0.9) 0 1px,
+      transparent 1.3px
+    ),
+    radial-gradient(
+      circle at 82% 72%,
+      rgba(255, 255, 255, 0.84) 0 0.9px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 90% 24%,
+      rgba(255, 255, 255, 0.88) 0 0.8px,
+      transparent 1px
+    );
   background-size: 360px 240px;
   background-repeat: repeat;
   mix-blend-mode: screen;
@@ -55,10 +95,33 @@
   inset: -8%;
   opacity: 0.8;
   background:
-    radial-gradient(circle at 20% 24%, rgba(59, 130, 246, 0.2), transparent 0 18%, rgba(59, 130, 246, 0.04) 28%, transparent 40%),
-    radial-gradient(circle at 76% 26%, rgba(168, 85, 247, 0.22), transparent 0 16%, rgba(168, 85, 247, 0.06) 30%, transparent 44%),
-    radial-gradient(circle at 58% 68%, rgba(14, 165, 233, 0.16), transparent 0 18%, rgba(14, 165, 233, 0.05) 30%, transparent 48%),
-    radial-gradient(circle at 40% 78%, rgba(251, 191, 36, 0.09), transparent 0 18%, transparent 46%);
+    radial-gradient(
+      circle at 20% 24%,
+      rgba(59, 130, 246, 0.2),
+      transparent 0 18%,
+      rgba(59, 130, 246, 0.04) 28%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 76% 26%,
+      rgba(168, 85, 247, 0.22),
+      transparent 0 16%,
+      rgba(168, 85, 247, 0.06) 30%,
+      transparent 44%
+    ),
+    radial-gradient(
+      circle at 58% 68%,
+      rgba(14, 165, 233, 0.16),
+      transparent 0 18%,
+      rgba(14, 165, 233, 0.05) 30%,
+      transparent 48%
+    ),
+    radial-gradient(
+      circle at 40% 78%,
+      rgba(251, 191, 36, 0.09),
+      transparent 0 18%,
+      transparent 46%
+    );
   filter: blur(26px) saturate(1.1);
   mix-blend-mode: screen;
 }
@@ -66,7 +129,7 @@
 .cosmic-backdrop__field--galaxy {
   inset: -10%;
   opacity: 0.98;
-  background-image: url('/galaxy-bg.svg');
+  background-image: url("/galaxy-bg.svg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -94,8 +157,15 @@
   width: clamp(220px, 24vw, 460px);
   aspect-ratio: 1;
   opacity: 0.5;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.98) 0 10%, rgba(255, 248, 217, 0.98) 14%, rgba(255, 219, 123, 0.94) 24%, rgba(255, 176, 47, 0.72) 38%, rgba(255, 140, 0, 0.28) 54%, transparent 72%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 255, 255, 0.98) 0 10%,
+    rgba(255, 248, 217, 0.98) 14%,
+    rgba(255, 219, 123, 0.94) 24%,
+    rgba(255, 176, 47, 0.72) 38%,
+    rgba(255, 140, 0, 0.28) 54%,
+    transparent 72%
+  );
   box-shadow:
     0 0 56px 22px rgba(255, 198, 82, 0.22),
     0 0 140px 52px rgba(255, 170, 43, 0.12);
@@ -107,7 +177,12 @@
   width: clamp(420px, 40vw, 760px);
   aspect-ratio: 1;
   opacity: 0.34;
-  background: radial-gradient(circle, rgba(255, 225, 160, 0.36) 0%, rgba(255, 201, 92, 0.16) 34%, transparent 68%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 225, 160, 0.36) 0%,
+    rgba(255, 201, 92, 0.16) 34%,
+    transparent 68%
+  );
   filter: blur(24px);
 }
 
@@ -126,7 +201,12 @@
   left: 78%;
   top: 14%;
   width: clamp(520px, 46vw, 860px);
-  background: radial-gradient(circle, rgba(255, 223, 168, 0.54) 0%, rgba(255, 195, 92, 0.2) 36%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 223, 168, 0.54) 0%,
+    rgba(255, 195, 92, 0.2) 36%,
+    transparent 70%
+  );
 }
 
 @keyframes cosmic-galaxy-drift {
@@ -153,6 +233,7 @@
   position: sticky;
   top: 0;
   width: 100%;
+  box-sizing: border-box;
   align-self: stretch;
   z-index: 60;
   display: flex;
@@ -564,7 +645,11 @@
 
 .skill-chart-tab.is-active {
   color: var(--heading);
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(99, 102, 241, 0.12));
+  background: linear-gradient(
+    135deg,
+    rgba(56, 189, 248, 0.18),
+    rgba(99, 102, 241, 0.12)
+  );
   border-color: rgba(56, 189, 248, 0.34);
   box-shadow: 0 10px 20px rgba(2, 6, 23, 0.12);
 }
@@ -697,7 +782,10 @@
   fill: #38bdf8;
   stroke: rgba(255, 255, 255, 0.9);
   stroke-width: 2;
-  transition: transform 180ms ease, stroke-width 180ms ease, opacity 180ms ease;
+  transition:
+    transform 180ms ease,
+    stroke-width 180ms ease,
+    opacity 180ms ease;
 }
 
 .skill-radar-dot.is-active {
@@ -725,7 +813,10 @@
 .skill-radar-legend-item,
 .skill-line-legend-item,
 .skill-donut-legend-item {
-  transition: transform 180ms ease, stroke-width 180ms ease, opacity 180ms ease;
+  transition:
+    transform 180ms ease,
+    stroke-width 180ms ease,
+    opacity 180ms ease;
 }
 
 .skill-radar-legend-item:hover,
@@ -896,7 +987,11 @@
   inset: 18px;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.05), transparent 42%),
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(255, 255, 255, 0.05),
+      transparent 42%
+    ),
     linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(10, 16, 31, 0.98));
   border: 1px solid rgba(148, 163, 184, 0.12);
   box-shadow:
@@ -910,8 +1005,16 @@
   inset: 8px;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.22), transparent 24%),
-    radial-gradient(circle at 50% 110%, rgba(56, 189, 248, 0.08), transparent 38%);
+    radial-gradient(
+      circle at 30% 28%,
+      rgba(255, 255, 255, 0.22),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 50% 110%,
+      rgba(56, 189, 248, 0.08),
+      transparent 38%
+    );
   pointer-events: none;
   mix-blend-mode: screen;
   opacity: 0.75;
@@ -1013,7 +1116,9 @@
   fill: #38bdf8;
   stroke: rgba(255, 255, 255, 0.9);
   stroke-width: 2;
-  transition: transform 180ms ease, stroke-width 180ms ease;
+  transition:
+    transform 180ms ease,
+    stroke-width 180ms ease;
 }
 
 .skill-line-dot.is-active {
@@ -1024,7 +1129,11 @@
 }
 
 .skill-analysis-panel .sidebar-title-with-icon .badge-icon {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.28), rgba(14, 165, 233, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.28),
+    rgba(14, 165, 233, 0.2)
+  );
 }
 
 .skill-analysis-panel .sidebar-title-with-icon .badge-icon .glyph-svg {
@@ -1068,7 +1177,11 @@
 }
 
 .skill-analysis-panel .sidebar-title-with-icon .badge-icon {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.28), rgba(14, 165, 233, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.28),
+    rgba(14, 165, 233, 0.2)
+  );
 }
 
 .skill-analysis-panel .sidebar-title-with-icon .badge-icon .glyph-svg {
@@ -2432,7 +2545,11 @@
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 90;
-    background: linear-gradient(180deg, rgba(8, 12, 22, 0.99), rgba(11, 17, 31, 0.98));
+    background: linear-gradient(
+      180deg,
+      rgba(8, 12, 22, 0.99),
+      rgba(11, 17, 31, 0.98)
+    );
     backdrop-filter: blur(10px);
     border-color: rgba(148, 163, 184, 0.22);
     box-shadow: 0 28px 64px rgba(2, 6, 23, 0.5);
@@ -2815,18 +2932,17 @@
     padding: 12px;
   }
 
+  @keyframes menu-item-in {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
 
-@keyframes menu-item-in {
-  from {
-    opacity: 0;
-    transform: translateX(-8px);
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
   .topbar-open .utility-actions {
     margin-left: 0;
   }

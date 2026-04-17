@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import "./App.css";
 import { BackdropScene } from "./BackdropScene";
 import profilePortrait from "./assets/avatar.jpg";
@@ -332,10 +332,10 @@ const localeContent: Record<Locale, LocaleContent> = {
           icon: "twitter",
         },
       ],
-      interestsLabel: "Sở thích",
+      interestsLabel: "Sở thích của tôi",
       interests: [
-        { label: "Đĩa nhạc", kind: "music" },
-        { label: "Máy bay", kind: "travel" },
+        { label: "Nghe nhạc", kind: "music" },
+        { label: "Du lịch", kind: "travel" },
         { label: "Tìm hiểu công nghệ", kind: "code" },
       ],
       analysisLabel: "Phân tích trình độ chuyên môn",
@@ -607,11 +607,11 @@ const localeContent: Record<Locale, LocaleContent> = {
           icon: "twitter",
         },
       ],
-      interestsLabel: "Interests",
+      interestsLabel: "My interests",
       interests: [
-        { label: "Vinyl Record", kind: "music" },
-        { label: "Airplane", kind: "travel" },
-        { label: "Tech Exploration", kind: "code" },
+        { label: "Listening to music", kind: "music" },
+        { label: "Travel", kind: "travel" },
+        { label: "Exploring technology", kind: "code" },
       ],
       analysisLabel: "Professional skill analysis",
       analysis: [
@@ -897,7 +897,8 @@ function App() {
 
   useEffect(() => {
     const isMobileDrawer = window.matchMedia("(max-width: 720px)").matches;
-    document.body.style.overflow = mobileNavOpen && isMobileDrawer ? "hidden" : "";
+    document.body.style.overflow =
+      mobileNavOpen && isMobileDrawer ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
@@ -910,7 +911,9 @@ function App() {
     };
 
     updateScrollTopVisibility();
-    window.addEventListener("scroll", updateScrollTopVisibility, { passive: true });
+    window.addEventListener("scroll", updateScrollTopVisibility, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener("scroll", updateScrollTopVisibility);
@@ -961,6 +964,34 @@ function App() {
       : copy.contact.themeToggleToDark;
   const nextLocale = locale === "vi" ? "en" : "vi";
 
+  const handleNavClick =
+    (hash: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      setMobileNavOpen(false);
+
+      const target = document.querySelector<HTMLElement>(hash);
+
+      if (!target) {
+        return;
+      }
+
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      const topbar = document.querySelector<HTMLElement>(".topbar");
+      const headerOffset = (topbar?.getBoundingClientRect().height ?? 0) + 18;
+      const targetTop = Math.max(
+        0,
+        target.getBoundingClientRect().top + window.scrollY - headerOffset,
+      );
+
+      window.history.replaceState(null, "", hash);
+      window.scrollTo({
+        top: targetTop,
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+      });
+    };
+
   const ThemeIcon = theme === "dark" ? MoonIcon : SunIcon;
 
   return (
@@ -1008,22 +1039,22 @@ function App() {
           </div>
           <div id="mobile-nav-panel" className="header-controls">
             <nav aria-label="Điều hướng nhanh" className="quick-nav">
-              <a href="#objective" onClick={() => setMobileNavOpen(false)}>
+              <a href="#objective" onClick={handleNavClick("#objective")}>
                 <span className="nav-label">{copy.nav.objective}</span>
               </a>
-              <a href="#skills" onClick={() => setMobileNavOpen(false)}>
+              <a href="#skills" onClick={handleNavClick("#skills")}>
                 <span className="nav-label">{copy.nav.skills}</span>
               </a>
-              <a href="#experience" onClick={() => setMobileNavOpen(false)}>
+              <a href="#experience" onClick={handleNavClick("#experience")}>
                 <span className="nav-label">{copy.nav.experience}</span>
               </a>
-              <a href="#projects" onClick={() => setMobileNavOpen(false)}>
+              <a href="#projects" onClick={handleNavClick("#projects")}>
                 <span className="nav-label">{copy.nav.projects}</span>
               </a>
-              <a href="#education" onClick={() => setMobileNavOpen(false)}>
+              <a href="#education" onClick={handleNavClick("#education")}>
                 <span className="nav-label">{copy.nav.education}</span>
               </a>
-              <a href="#contact" onClick={() => setMobileNavOpen(false)}>
+              <a href="#contact" onClick={handleNavClick("#contact")}>
                 <span className="nav-label">{copy.nav.contact}</span>
               </a>
             </nav>
@@ -1044,7 +1075,9 @@ function App() {
                 aria-pressed={locale === "en"}
               >
                 <LanguageIcon locale={nextLocale} />
-                <span className="toggle-label">{copy.contact.languageToggle}</span>
+                <span className="toggle-label">
+                  {copy.contact.languageToggle}
+                </span>
               </button>
             </div>
           </div>
@@ -1184,22 +1217,29 @@ function App() {
               <SidebarBadgeIcon kind="personal" />
               <span>{copy.sidebar.analysisLabel}</span>
             </h4>
-            <div className="skill-chart-controls" role="tablist" aria-label={copy.sidebar.analysisLabel}>
-              {(
-                ["bars", "radar", "donut", "line"] as SkillChartMode[]
-              ).map((mode) => (
-                <button
-                  key={mode}
-                  type="button"
-                  className={`skill-chart-tab ${analysisMode === mode ? "is-active" : ""}`}
-                  onClick={() => setAnalysisMode(mode)}
-                  aria-pressed={analysisMode === mode}
-                >
-                  {copy.sidebar.analysisModes[mode]}
-                </button>
-              ))}
+            <div
+              className="skill-chart-controls"
+              role="tablist"
+              aria-label={copy.sidebar.analysisLabel}
+            >
+              {(["bars", "radar", "donut", "line"] as SkillChartMode[]).map(
+                (mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    className={`skill-chart-tab ${analysisMode === mode ? "is-active" : ""}`}
+                    onClick={() => setAnalysisMode(mode)}
+                    aria-pressed={analysisMode === mode}
+                  >
+                    {copy.sidebar.analysisModes[mode]}
+                  </button>
+                ),
+              )}
             </div>
-            <SkillAnalysisChart mode={analysisMode} items={copy.sidebar.analysis} />
+            <SkillAnalysisChart
+              mode={analysisMode}
+              items={copy.sidebar.analysis}
+            />
           </section>
         </aside>
 
@@ -2004,7 +2044,10 @@ function SkillRxjsIcon() {
 function InterestIcon({ kind }: { kind: InterestItem["kind"] }) {
   if (kind === "music") {
     return (
-      <span className="interest-icon-wrap interest-icon-music" aria-hidden="true">
+      <span
+        className="interest-icon-wrap interest-icon-music"
+        aria-hidden="true"
+      >
         <FaCompactDisc className="glyph-svg interest-glyph" />
       </span>
     );
@@ -2012,7 +2055,10 @@ function InterestIcon({ kind }: { kind: InterestItem["kind"] }) {
 
   if (kind === "travel") {
     return (
-      <span className="interest-icon-wrap interest-icon-travel" aria-hidden="true">
+      <span
+        className="interest-icon-wrap interest-icon-travel"
+        aria-hidden="true"
+      >
         <FaPlane className="glyph-svg interest-glyph" />
       </span>
     );
@@ -2063,7 +2109,11 @@ function SkillAnalysisChart({
   if (mode === "bars") {
     return (
       <div className="skill-analysis-chart skill-analysis-bars">
-        <div className="skill-analysis-list" role="list" aria-label="Skill bars">
+        <div
+          className="skill-analysis-list"
+          role="list"
+          aria-label="Skill bars"
+        >
           {items.map((item, index) => (
             <button
               key={item.label}
@@ -2112,7 +2162,11 @@ function SkillAnalysisChart({
 
     return (
       <div className="skill-analysis-chart skill-analysis-radar">
-        <svg className="skill-radar-svg" viewBox="0 0 240 240" aria-hidden="true">
+        <svg
+          className="skill-radar-svg"
+          viewBox="0 0 240 240"
+          aria-hidden="true"
+        >
           <polygon className="skill-radar-grid" points={outlinePoints} />
           <polygon
             className="skill-radar-grid skill-radar-grid-inner"
@@ -2125,7 +2179,14 @@ function SkillAnalysisChart({
           />
           <polygon className="skill-radar-area" points={polygonPoints} />
           {items.map((item, index) => {
-            const point = buildRadarPoint(item.value, 92, 120, 120, index, items.length);
+            const point = buildRadarPoint(
+              item.value,
+              92,
+              120,
+              120,
+              index,
+              items.length,
+            );
             return (
               <g
                 key={item.label}
@@ -2168,7 +2229,11 @@ function SkillAnalysisChart({
             );
           })}
         </svg>
-        <div className="skill-radar-legend" role="list" aria-label="Radar legend">
+        <div
+          className="skill-radar-legend"
+          role="list"
+          aria-label="Radar legend"
+        >
           {items.map((item, index) => (
             <button
               key={item.label}
@@ -2227,7 +2292,11 @@ function SkillAnalysisChart({
             <span>{activeItem.label}</span>
           </div>
         </div>
-        <div className="skill-donut-legend" role="list" aria-label="Skill donut legend">
+        <div
+          className="skill-donut-legend"
+          role="list"
+          aria-label="Skill donut legend"
+        >
           {items.map((item, index) => (
             <button
               key={item.label}
@@ -2297,12 +2366,26 @@ function SkillAnalysisChart({
             }}
             className={focusedIndex === index ? "is-active" : ""}
           >
-            <circle className="skill-line-hit" cx={point.x} cy={point.y} r="11" />
-            <circle className={`skill-line-dot ${focusedIndex === index ? "is-active" : ""}`} cx={point.x} cy={point.y} r="4.6" />
+            <circle
+              className="skill-line-hit"
+              cx={point.x}
+              cy={point.y}
+              r="11"
+            />
+            <circle
+              className={`skill-line-dot ${focusedIndex === index ? "is-active" : ""}`}
+              cx={point.x}
+              cy={point.y}
+              r="4.6"
+            />
           </g>
         ))}
       </svg>
-      <div className="skill-line-legend" role="list" aria-label="Trend line legend">
+      <div
+        className="skill-line-legend"
+        role="list"
+        aria-label="Trend line legend"
+      >
         {items.map((item, index) => (
           <button
             key={item.label}
@@ -2366,7 +2449,14 @@ function buildRadarPoints(
 ) {
   return items
     .map((item, index) => {
-      const point = buildRadarPoint(item.value, radius, centerX, centerY, index, items.length);
+      const point = buildRadarPoint(
+        item.value,
+        radius,
+        centerX,
+        centerY,
+        index,
+        items.length,
+      );
       return `${point.x},${point.y}`;
     })
     .join(" ");
@@ -2383,7 +2473,10 @@ function buildLinePoint(
 ) {
   const usableWidth = right - left;
   const usableHeight = bottom - top;
-  const x = count === 1 ? (left + right) / 2 : left + (usableWidth * index) / (count - 1);
+  const x =
+    count === 1
+      ? (left + right) / 2
+      : left + (usableWidth * index) / (count - 1);
   const y = bottom - (usableHeight * value) / 100;
 
   return {
