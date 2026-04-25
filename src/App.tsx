@@ -92,27 +92,52 @@ function App() {
   }, [locale]);
 
   useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 721px)");
     const handleViewportChange = () => {
-      if (window.matchMedia("(min-width: 721px)").matches) {
+      if (desktopQuery.matches) {
         setMobileNavOpen(false);
       }
     };
 
     handleViewportChange();
-    window.addEventListener("resize", handleViewportChange);
+    desktopQuery.addEventListener("change", handleViewportChange);
 
     return () => {
-      window.removeEventListener("resize", handleViewportChange);
+      desktopQuery.removeEventListener("change", handleViewportChange);
     };
   }, []);
 
   useEffect(() => {
-    const isMobileDrawer = window.matchMedia("(max-width: 720px)").matches;
-    document.body.style.overflow =
-      mobileNavOpen && isMobileDrawer ? "hidden" : "";
+    const mobileQuery = window.matchMedia("(max-width: 720px)");
+    const syncBodyScroll = () => {
+      document.body.style.overflow =
+        mobileNavOpen && mobileQuery.matches ? "hidden" : "";
+    };
+
+    syncBodyScroll();
+    mobileQuery.addEventListener("change", syncBodyScroll);
 
     return () => {
+      mobileQuery.removeEventListener("change", syncBodyScroll);
       document.body.style.overflow = "";
+    };
+  }, [mobileNavOpen]);
+
+  useEffect(() => {
+    if (!mobileNavOpen) {
+      return;
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileNavOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
     };
   }, [mobileNavOpen]);
 
@@ -1484,14 +1509,20 @@ function SkillAnalysisChart({
 
   if (mode === "donut") {
     const total = items.reduce((sum, item) => sum + item.value, 0) || 1;
-    let current = 0;
+    const segments = items.reduce(
+      (result, item, index) => {
+        const end = result.current + (item.value / total) * 100;
 
-    const segments = items.map((item, index) => {
-      const start = current;
-      current += (item.value / total) * 100;
-      const end = current;
-      return `${palette[index % palette.length]} ${start}% ${end}%`;
-    });
+        return {
+          current: end,
+          values: [
+            ...result.values,
+            `${palette[index % palette.length]} ${result.current}% ${end}%`,
+          ],
+        };
+      },
+      { current: 0, values: [] as string[] },
+    ).values;
 
     return (
       <div className="skill-analysis-chart skill-analysis-donut">
