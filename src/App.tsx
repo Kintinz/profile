@@ -389,7 +389,7 @@ function App() {
                     <ContactLinkIcon kind={item.kind} />
                     <span>{item.label}</span>
                   </span>
-                  <strong>{item.value}</strong>
+                  <strong>{maskDisplayValue(item.value, item.kind)}</strong>
                 </a>
               ))}
             </div>
@@ -417,7 +417,7 @@ function App() {
                   </span>
                   <span className="social-copy">
                     <strong>{item.label}</strong>
-                    <span>{item.value}</span>
+                    <span>{maskDisplayValue(item.value, item.icon)}</span>
                   </span>
                 </a>
               ))}
@@ -699,13 +699,13 @@ function App() {
                 className="primary-action"
                 href={`mailto:${copy.contact.email}`}
               >
-                {copy.contact.email}
+                {maskDisplayValue(copy.contact.email, "mail")}
               </a>
               <a
                 className="secondary-action"
                 href={`tel:${copy.contact.phone}`}
               >
-                {copy.contact.phone}
+                {maskDisplayValue(copy.contact.phone, "phone")}
               </a>
             </div>
           </section>
@@ -744,6 +744,47 @@ function App() {
       </div>
     </main>
   );
+}
+
+function maskPhoneValue(value: string) {
+  const digits = value.replace(/\D/g, "");
+
+  if (digits.length <= 4) {
+    return value;
+  }
+
+  return `${digits.slice(0, 4)}***${digits.slice(-4)}`;
+}
+
+function maskEmailValue(value: string) {
+  const [localPart, domain] = value.split("@");
+
+  if (!localPart || !domain) {
+    return value;
+  }
+
+  const visiblePrefix = localPart.slice(0, Math.min(4, localPart.length));
+
+  return `${visiblePrefix}***@${domain}`;
+}
+
+function maskDisplayValue(
+  value: string,
+  kind?: "phone" | "mail" | SocialIconKind,
+) {
+  if (kind === "phone") {
+    return maskPhoneValue(value);
+  }
+
+  if (kind === "mail") {
+    return maskEmailValue(value);
+  }
+
+  if (value.includes("zalo.me/")) {
+    return value.replace(/(zalo\.me\/\d{4})\d+(\d{4})/, "$1***$2");
+  }
+
+  return value;
 }
 
 export default App;
