@@ -41,12 +41,12 @@ export class ContactDispatcher {
     const history = this.getStoredMessages();
 
     this.container.innerHTML = `
-      <div class="mt-8 bg-slate-950/90 border border-emerald-500/40 rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden code-font">
+      <div class="bg-slate-900/90 border border-cyan-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden code-font">
         <!-- Top Tech Glow Bar -->
         <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/10">
-              ${getIconSvg('radio', 'w-5 h-5 text-emerald-400')}
+            <div class="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-lg shadow-cyan-500/10">
+              ${getIconSvg('radio', 'w-5 h-5 text-cyan-400')}
             </div>
             <div>
               <div class="flex items-center gap-2">
@@ -57,7 +57,7 @@ export class ContactDispatcher {
             </div>
           </div>
           <div class="hidden sm:flex items-center gap-2">
-            <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold">
+            <span class="px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[10px] font-bold">
               GATEWAY: HANOI-NODE-01
             </span>
           </div>
@@ -72,7 +72,7 @@ export class ContactDispatcher {
                 ${getIconSvg('user', 'w-3.5 h-3.5 text-cyan-400')} TÊN CỦA BẠN / ĐƠN VỊ TUYỂN DỤNG *
               </label>
               <input type="text" id="disp-sender" required placeholder="VD: Hoàng Mai - HR Lead / FPT Software" 
-                class="w-full bg-slate-900/90 border border-white/10 focus:border-cyan-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all" />
+                class="w-full bg-slate-950/80 border border-white/10 focus:border-cyan-400 rounded-xl px-3.5 h-11 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all" />
             </div>
 
             <!-- Email -->
@@ -81,7 +81,7 @@ export class ContactDispatcher {
                 ${getIconSvg('mail', 'w-3.5 h-3.5 text-purple-400')} EMAIL PHẢN HỒI *
               </label>
               <input type="email" id="disp-email" required placeholder="recruiter@company.com" 
-                class="w-full bg-slate-900/90 border border-white/10 focus:border-purple-400 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-purple-400 transition-all" />
+                class="w-full bg-slate-950/80 border border-white/10 focus:border-purple-400 rounded-xl px-3.5 h-11 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-purple-400 transition-all" />
             </div>
           </div>
 
@@ -92,13 +92,13 @@ export class ContactDispatcher {
                 ${getIconSvg('briefcase', 'w-3.5 h-3.5 text-emerald-400')} MỤC ĐÍCH / VỊ TRÍ HỢP TÁC
               </label>
               <select id="disp-topic" 
-                class="cyber-select w-full bg-slate-900/90 border border-white/10 focus:border-emerald-400 rounded-xl px-3.5 h-11 text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-all cursor-pointer">
-                <option value="Senior .NET Fullstack Developer">Vị trí: Senior .NET Core Fullstack Developer</option>
-                <option value="Backend .NET Core & SQL Specialist">Vị trí: Backend .NET Core & Tối Ưu SQL</option>
-                <option value="Frontend Lead (Angular / Vue)">Vị trí: Frontend Developer (Angular / Vue / React)</option>
+                class="cyber-select w-full bg-slate-950/80 border border-white/10 focus:border-emerald-400 rounded-xl px-3.5 h-11 text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-all cursor-pointer">
+                <option value="Senior .NET Fullstack Developer">Vị trí: .NET Core Fullstack Developer</option>
+                <option value="Backend .NET Core & SQL Specialist">Vị trí: Backend .NET Core & SQL</option>
+                <option value="Frontend Lead (Angular / Vue)">Vị trí: Frontend Developer (Angular/Vue/React)</option>
                 <option value="Microservices & Enterprise Architecture">Tư vấn Kiến Trúc Hệ Thống & Microservices</option>
-                <option value="Freelance / Offshore Project">Dự án Phần Mềm Gia Công / Hợp Đồng Tự Do</option>
-                <option value="General Inquiry">Trao Đổi Khác</option>
+                <option value="Freelance / Offshore Project">Dự án Gia Công / Hợp Đồng Tự Do</option>
+                <option value="General Inquiry">Trao Đổi / Mục Đích Khác</option>
               </select>
             </div>
 
@@ -108,9 +108,9 @@ export class ContactDispatcher {
                 ${getIconSvg('zap', 'w-3.5 h-3.5 text-amber-400')} MỨC ĐỘ ƯU TIÊN
               </label>
               <select id="disp-priority" 
-                class="cyber-select w-full bg-slate-900/90 border border-white/10 focus:border-amber-400 rounded-xl px-3.5 h-11 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all cursor-pointer">
+                class="cyber-select w-full bg-slate-950/80 border border-white/10 focus:border-amber-400 rounded-xl px-3.5 h-11 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all cursor-pointer">
                 <option value="Standard">Tiêu Chuẩn (Phản hồi trong 24h)</option>
-                <option value="Urgent">Khẩn Cấp // Urgent (Đang mở đợt tuyển dụng gấp)</option>
+                <option value="Urgent">Khẩn Cấp // Đang tuyển dụng gấp</option>
                 <option value="Direct Interview">Đặt Lịch Phỏng Vấn Trực Tiếp</option>
               </select>
             </div>
@@ -122,11 +122,11 @@ export class ContactDispatcher {
               ${getIconSvg('file-text', 'w-3.5 h-3.5 text-cyan-400')} THÔNG ĐIỆP CHI TIẾT (Yêu cầu, đãi ngộ, mô tả dự án...) *
             </label>
             <textarea id="disp-message" required rows="4" placeholder="Xin chào Đạt, chúng tôi ấn tượng với các dự án HRM/BPM và kinh nghiệm .NET Core của bạn. Chúng tôi muốn mời bạn tham gia buổi trao đổi..." 
-              class="w-full bg-slate-900/90 border border-white/10 focus:border-cyan-400 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all leading-relaxed"></textarea>
+              class="w-full bg-slate-950/80 border border-white/10 focus:border-cyan-400 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all leading-relaxed"></textarea>
           </div>
 
           <!-- Transmission Status Box (Hidden by default) -->
-          <div id="dispatch-progress-box" class="hidden bg-slate-900/90 border border-cyan-500/40 rounded-2xl p-4 space-y-2.5">
+          <div id="dispatch-progress-box" class="hidden bg-slate-950/90 border border-cyan-500/40 rounded-2xl p-4 space-y-2.5">
             <div class="flex items-center justify-between text-xs">
               <span id="dispatch-step-text" class="text-cyan-300 font-bold flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
@@ -134,7 +134,7 @@ export class ContactDispatcher {
               </span>
               <span id="dispatch-percent" class="text-cyan-400 font-bold code-font">33%</span>
             </div>
-            <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-white/10">
+            <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-white/10">
               <div id="dispatch-progress-bar" class="h-full bg-gradient-to-r from-cyan-500 via-emerald-400 to-cyan-300 w-1/3 transition-all duration-300"></div>
             </div>
           </div>
@@ -158,17 +158,17 @@ export class ContactDispatcher {
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-            <div class="flex items-center gap-2 text-[11px] text-slate-400">
-              ${getIconSvg('shield-check', 'w-3.5 h-3.5 text-emerald-400')}
-              <span>Tín hiệu truyền trực tiếp và bảo mật 100% không lưu cookie theo dõi</span>
+          <div class="flex flex-col lg:flex-row items-center justify-between gap-4 pt-4 border-t border-white/10">
+            <div class="flex items-center gap-2 text-xs text-slate-400 text-center sm:text-left">
+              ${getIconSvg('shield-check', 'w-4 h-4 text-emerald-400 shrink-0')}
+              <span>Tín hiệu truyền trực tiếp & bảo mật 100%, không lưu cookie theo dõi</span>
             </div>
 
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-              <button type="button" id="btn-toggle-outbox" class="px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 hover:border-cyan-400 text-slate-300 hover:text-white text-xs font-bold transition-all flex items-center gap-1.5 flex-1 sm:flex-none justify-center">
-                ${getIconSvg('archive', 'w-3.5 h-3.5 text-cyan-400')} <span>Hộp Thư Đi (${history.length})</span>
+            <div class="flex items-center gap-3 w-full sm:w-auto shrink-0 justify-end">
+              <button type="button" id="btn-toggle-outbox" class="h-11 px-4 rounded-xl bg-slate-950 border border-white/10 hover:border-cyan-400 text-slate-300 hover:text-white text-xs font-bold transition-all inline-flex items-center gap-2 justify-center shrink-0">
+                ${getIconSvg('archive', 'w-4 h-4 text-cyan-400')} <span>Hộp Thư Đi (${history.length})</span>
               </button>
-              <button type="submit" id="btn-submit-dispatch" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:opacity-90 text-slate-950 font-black text-xs transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20 flex-1 sm:flex-none justify-center hover:scale-105 active:scale-95">
+              <button type="submit" id="btn-submit-dispatch" class="h-11 px-6 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:opacity-90 text-slate-950 font-black text-xs transition-all inline-flex items-center gap-2 shadow-lg shadow-emerald-500/20 justify-center shrink-0 hover:scale-105 active:scale-95 whitespace-nowrap">
                 ${getIconSvg('send', 'w-4 h-4 text-slate-950')} <span>Phát Tín Hiệu // DISPATCH</span>
               </button>
             </div>
