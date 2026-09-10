@@ -128,6 +128,61 @@
       --theme-color: #a855f7;
     }
 
+    /* Unified Controls & Select Geometry */
+    .cyber-select {
+      height: 34px;
+      line-height: normal;
+      background-color: rgba(2, 6, 23, 0.95);
+      color: #e2e8f0;
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      border-radius: 0.75rem;
+      padding: 0 2rem 0 0.75rem;
+      font-size: 0.75rem;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2306b6d4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.65rem center;
+      background-size: 13px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      box-sizing: border-box;
+    }
+    .cyber-select.h-11 {
+      height: 2.75rem !important; /* 44px for Contact Form inputs */
+      padding-left: 0.875rem !important;
+    }
+    .cyber-select:hover {
+      border-color: rgba(6, 182, 212, 0.7);
+      background-color: rgba(15, 23, 42, 0.95);
+    }
+    .cyber-select:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+    }
+    .cyber-select + button,
+    .cyber-select ~ button,
+    .btn-open-guide,
+    .cyber-ctrl-btn {
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+    .cyber-ctrl-btn {
+      gap: 0.375rem;
+      padding: 0 0.875rem;
+      border-radius: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     /* Print Styles for CV Resume */
     @media print {
       body * {
@@ -287,31 +342,31 @@
 
           <!-- Highlight Metric Cards -->
           <div class="grid grid-cols-3 gap-3 py-2 max-w-lg">
-            <div class="cyber-spotlight tilt-card bg-slate-900/70 border border-cyan-500/20 rounded-2xl p-3 text-center shadow-lg transition-all">
+            <div class="cyber-spotlight tilt-card bg-slate-900/70 border border-cyan-500/20 rounded-2xl p-2.5 h-20 flex flex-col justify-center items-center text-center shadow-lg transition-all">
               <span class="block code-font text-xl sm:text-2xl font-black text-cyan-400"><span class="counter-val" data-target="3" data-suffix="+ Năm">3+ Năm</span></span>
               <span class="text-[10px] text-slate-400 block mt-0.5">Kinh nghiệm HRM & BPM</span>
             </div>
-            <div class="cyber-spotlight tilt-card bg-slate-900/70 border border-emerald-500/20 rounded-2xl p-3 text-center shadow-lg transition-all">
+            <div class="cyber-spotlight tilt-card bg-slate-900/70 border border-emerald-500/20 rounded-2xl p-2.5 h-20 flex flex-col justify-center items-center text-center shadow-lg transition-all">
               <span class="block code-font text-xl sm:text-2xl font-black text-emerald-400"><span class="counter-val" data-target="50" data-prefix="40 - ">40 - 50</span></span>
               <span class="text-[10px] text-slate-400 block mt-0.5">Nhà cung cấp kết nối</span>
             </div>
-            <div class="cyber-spotlight tilt-card bg-slate-900/70 border border-purple-500/20 rounded-2xl p-3 text-center shadow-lg transition-all">
+            <div class="cyber-spotlight tilt-card bg-slate-900/70 border border-purple-500/20 rounded-2xl p-2.5 h-20 flex flex-col justify-center items-center text-center shadow-lg transition-all">
               <span class="block code-font text-xl sm:text-2xl font-black text-purple-400"><span class="counter-val" data-target="5" data-prefix="3 - " data-suffix=" Ngày">3 - 5 Ngày</span></span>
               <span class="text-[10px] text-slate-400 block mt-0.5">Rút ngắn quy trình duyệt</span>
             </div>
           </div>
 
           <div class="flex flex-wrap items-center gap-3 pt-2 code-font text-xs">
-            <button class="btn-open-resume px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-500 to-purple-500 text-white font-black shadow-lg shadow-purple-500/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+            <button class="btn-open-resume h-11 px-5 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-500 to-purple-500 text-white font-black shadow-lg shadow-purple-500/30 hover:scale-105 active:scale-95 transition-all inline-flex items-center justify-center gap-2">
               <i data-lucide="file-text" class="w-4 h-4 text-purple-200"></i> <span>Xem CV Ứng Viên (.PDF)</span>
             </button>
-            <a href="#projects" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-400 text-slate-950 font-bold shadow-lg shadow-cyan-500/25 hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5">
+            <a href="#projects" class="h-11 px-5 rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-400 text-slate-950 font-bold shadow-lg shadow-cyan-500/25 hover:scale-105 active:scale-95 transition-all inline-flex items-center justify-center gap-1.5">
               <i data-lucide="folder-git-2" class="w-4 h-4"></i> <span>5 Dự Án Thực Chiến</span>
             </a>
-            <button class="btn-open-command-palette px-4 py-3 rounded-2xl bg-slate-900 border border-cyan-500/40 text-cyan-300 font-bold shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+            <button class="btn-open-command-palette h-11 px-4 rounded-2xl bg-slate-900 border border-cyan-500/40 text-cyan-300 font-bold shadow-xl hover:scale-105 active:scale-95 transition-all inline-flex items-center justify-center gap-2">
               <i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i> <span>Lệnh ⌘K</span>
             </button>
-            <a href="#arcade" class="px-4 py-3 rounded-2xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white transition-all flex items-center gap-2">
+            <a href="#arcade" class="h-11 px-4 rounded-2xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white transition-all inline-flex items-center justify-center gap-2">
               <i data-lucide="gamepad-2" class="w-4 h-4 text-slate-400"></i> <span>Mini-Game (16 Trò)</span>
             </a>
           </div>
@@ -463,7 +518,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
         <!-- 1. Backend Core -->
-        <div class="cyber-spotlight bg-slate-900/85 border border-cyan-500/30 rounded-3xl p-5 hover:border-cyan-400 transition-all flex flex-col justify-between shadow-xl">
+        <div class="cyber-spotlight bg-slate-900/85 border border-cyan-500/30 rounded-3xl p-5 hover:border-cyan-400 transition-all flex flex-col justify-between h-full shadow-xl">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-lg shadow-cyan-500/10">
@@ -482,14 +537,14 @@
               <span class="px-2 py-0.5 rounded bg-slate-950 border border-cyan-500/20">CQRS</span>
             </div>
           </div>
-          <div>
+          <div class="mt-auto pt-4">
             <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden"><div class="bg-cyan-500 h-full w-[95%]"></div></div>
             <span class="text-[10px] code-font text-cyan-400 mt-1 block text-right font-bold">95% Chuyên Sâu</span>
           </div>
         </div>
 
         <!-- 2. Frontend Ecosystem -->
-        <div class="cyber-spotlight bg-slate-900/85 border border-emerald-500/30 rounded-3xl p-5 hover:border-emerald-400 transition-all flex flex-col justify-between shadow-xl">
+        <div class="cyber-spotlight bg-slate-900/85 border border-emerald-500/30 rounded-3xl p-5 hover:border-emerald-400 transition-all flex flex-col justify-between h-full shadow-xl">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/10">
@@ -508,14 +563,14 @@
               <span class="px-2 py-0.5 rounded bg-slate-950 border border-emerald-500/20">Vue.js</span>
             </div>
           </div>
-          <div>
+          <div class="mt-auto pt-4">
             <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden"><div class="bg-emerald-500 h-full w-[92%]"></div></div>
             <span class="text-[10px] code-font text-emerald-400 mt-1 block text-right font-bold">92% Thành Thạo</span>
           </div>
         </div>
 
         <!-- 3. Desktop & Realtime -->
-        <div class="cyber-spotlight bg-slate-900/85 border border-purple-500/30 rounded-3xl p-5 hover:border-purple-400 transition-all flex flex-col justify-between shadow-xl">
+        <div class="cyber-spotlight bg-slate-900/85 border border-purple-500/30 rounded-3xl p-5 hover:border-purple-400 transition-all flex flex-col justify-between h-full shadow-xl">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-lg shadow-purple-500/10">
@@ -533,14 +588,14 @@
               <span class="px-2 py-0.5 rounded bg-slate-950 border border-purple-500/20">Dual-Screen</span>
             </div>
           </div>
-          <div>
+          <div class="mt-auto pt-4">
             <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden"><div class="bg-purple-500 h-full w-[88%]"></div></div>
             <span class="text-[10px] code-font text-purple-400 mt-1 block text-right font-bold">88% Thực Chiến</span>
           </div>
         </div>
 
         <!-- 4. Database & DevOps -->
-        <div class="cyber-spotlight bg-slate-900/85 border border-amber-500/30 rounded-3xl p-5 hover:border-amber-400 transition-all flex flex-col justify-between shadow-xl">
+        <div class="cyber-spotlight bg-slate-900/85 border border-amber-500/30 rounded-3xl p-5 hover:border-amber-400 transition-all flex flex-col justify-between h-full shadow-xl">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/10">
@@ -559,7 +614,7 @@
               <span class="px-2 py-0.5 rounded bg-slate-950 border border-amber-500/20">Docker</span>
             </div>
           </div>
-          <div>
+          <div class="mt-auto pt-4">
             <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden"><div class="bg-amber-500 h-full w-[90%]"></div></div>
             <span class="text-[10px] code-font text-amber-400 mt-1 block text-right font-bold">90% Vững Vàng</span>
           </div>
@@ -581,9 +636,9 @@
       <!-- Interactive Project Filter Container -->
       <div id="project-filter-container" class="relative z-10"></div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 relative z-10">
         <!-- Project 1: HRM System -->
-        <div class="project-card-item bg-slate-900/85 border border-cyan-500/30 hover:border-cyan-400 rounded-3xl p-6 flex flex-col justify-between shadow-xl transition-all group" data-category="dotnet angular">
+        <div class="project-card-item bg-slate-900/85 border border-cyan-500/30 hover:border-cyan-400 rounded-3xl p-6 flex flex-col justify-between h-full shadow-xl transition-all group lg:col-span-2" data-category="dotnet angular">
           <div>
             <div class="flex items-center justify-between text-xs code-font text-cyan-400 mb-2">
               <span>ASP.NET Core • Angular</span>
@@ -595,7 +650,7 @@
               Quản lý hồ sơ nhân sự toàn diện, xây dựng engine workflow phê duyệt đa cấp có thể cấu hình động, phân quyền RBAC chặt chẽ, ghi log lịch sử thao tác (audit trail) và báo cáo thống kê.
             </p>
           </div>
-          <div>
+          <div class="mt-auto">
             <div class="bg-slate-950/80 rounded-2xl p-3 border border-emerald-500/20 mb-4">
               <span class="text-[11px] font-bold text-emerald-400 block code-font"><span class="flex items-center gap-1.5"><i data-lucide="trophy" class="w-3.5 h-3.5"></i> KẾT QUẢ ĐẠT ĐƯỢC:</span></span>
               <span class="text-xs text-slate-300">Giảm đáng kể thời gian xử lý phê duyệt thủ công, tự động hóa 100% luồng duyệt nội bộ.</span>
@@ -616,7 +671,7 @@
         </div>
 
         <!-- Project 2: Supplier Chain Portal -->
-        <div class="project-card-item bg-slate-900/85 border border-emerald-500/30 hover:border-emerald-400 rounded-3xl p-6 flex flex-col justify-between shadow-xl transition-all group" data-category="dotnet angular">
+        <div class="project-card-item bg-slate-900/85 border border-emerald-500/30 hover:border-emerald-400 rounded-3xl p-6 flex flex-col justify-between h-full shadow-xl transition-all group lg:col-span-2" data-category="dotnet angular">
           <div>
             <div class="flex items-center justify-between text-xs code-font text-emerald-400 mb-2">
               <span>.NET MVC • Angular</span>
@@ -628,7 +683,7 @@
               Quản lý thông tin nhà cung cấp, theo dõi đơn hàng, phê duyệt hồ sơ đối tác và dashboard báo cáo luân chuyển hàng hóa trực quan.
             </p>
           </div>
-          <div>
+          <div class="mt-auto">
             <div class="bg-slate-950/80 rounded-2xl p-3 border border-emerald-500/20 mb-4">
               <span class="text-[11px] font-bold text-emerald-400 block code-font"><span class="flex items-center gap-1.5"><i data-lucide="trophy" class="w-3.5 h-3.5"></i> KẾT QUẢ ĐẠT ĐƯỢC:</span></span>
               <span class="text-xs text-slate-300">Kết nối thành công <strong>40 đến 50 nhà cung cấp</strong>; rút ngắn quy trình phê duyệt từ <strong>20-30 ngày xuống chỉ còn 3-5 ngày</strong>.</span>
@@ -648,7 +703,7 @@
         </div>
 
         <!-- Project 3: BPM Portal -->
-        <div class="project-card-item bg-slate-900/85 border border-purple-500/30 hover:border-purple-400 rounded-3xl p-6 flex flex-col justify-between shadow-xl transition-all group" data-category="angular">
+        <div class="project-card-item bg-slate-900/85 border border-purple-500/30 hover:border-purple-400 rounded-3xl p-6 flex flex-col justify-between h-full shadow-xl transition-all group lg:col-span-2" data-category="angular">
           <div>
             <div class="flex items-center justify-between text-xs code-font text-purple-400 mb-2">
               <span>Angular • REST API</span>
@@ -660,7 +715,7 @@
               Phát triển giao diện cho hệ thống xử lý quy trình nội bộ, xây dựng màn hình phê duyệt, form nghiệp vụ động và dashboard theo dõi trạng thái công việc thời gian thực.
             </p>
           </div>
-          <div>
+          <div class="mt-auto">
             <div class="bg-slate-950/80 rounded-2xl p-3 border border-purple-500/20 mb-4">
               <span class="text-[11px] font-bold text-purple-400 block code-font"><span class="flex items-center gap-1.5"><i data-lucide="award" class="w-3.5 h-3.5"></i> ĐIỂM SÁNG KỸ THUẬT:</span></span>
               <span class="text-xs text-slate-300">Tích hợp mượt mà dữ liệu từ REST API backend, tối ưu UX, triệt tiêu lỗi giao diện và tăng tốc xử lý đơn.</span>
@@ -680,7 +735,7 @@
         </div>
 
         <!-- Project 4: POS & Transaction Inspection -->
-        <div class="project-card-item bg-slate-900/85 border border-sky-500/30 hover:border-sky-400 rounded-3xl p-6 flex flex-col justify-between shadow-xl transition-all group md:col-span-2 lg:col-span-2" data-category="realtime">
+        <div class="project-card-item bg-slate-900/85 border border-sky-500/30 hover:border-sky-400 rounded-3xl p-6 flex flex-col justify-between h-full shadow-xl transition-all group md:col-span-2 lg:col-span-3" data-category="realtime">
           <div>
             <div class="flex items-center justify-between text-xs code-font text-sky-400 mb-2">
               <span>Electron • SignalR • React • Angular</span>
@@ -690,16 +745,16 @@
             <div class="text-xs text-slate-400 mb-3 code-font">Vai trò: <strong class="text-sky-400">Frontend Developer</strong> | Team: 5 người</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-300 mb-4">
               <div class="bg-slate-950/60 p-3 rounded-2xl border border-white/5">
-                <span class="text-cyan-400 font-bold block mb-1"><span class="flex items-center gap-1.5"><i data-lucide="monitor" class="w-3.5 h-3.5"></i> 1. Màn hình hiển thị khách hàng:</span></span>
-                <span>Dùng <strong>Electron, React, TypeScript, SignalR</strong>. Đồng bộ thời gian thực giỏ hàng, thanh toán và tự động về chế độ quảng cáo khi hoàn tất giao dịch.</span>
+                <span class="text-cyan-400 font-bold block mb-1"><span class="flex items-center gap-1.5"><i data-lucide="monitor" class="w-3.5 h-3.5"></i> 1. Màn hình khách hàng:</span></span>
+                <span>Dùng <strong>Electron, React, SignalR</strong>. Đồng bộ tức thời giỏ hàng, thanh toán và chế độ quảng cáo khi rảnh.</span>
               </div>
               <div class="bg-slate-950/60 p-3 rounded-2xl border border-white/5">
-                <span class="text-emerald-400 font-bold block mb-1"><span class="flex items-center gap-1.5"><i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i> 2. Báo cáo kiểm tra giao dịch:</span></span>
-                <span>Dùng <strong>Angular, TypeScript, REST API, RxJS</strong>. Xây dựng bộ lọc tìm kiếm và đối chiếu dữ liệu giao dịch chính xác với nghiệp vụ.</span>
+                <span class="text-emerald-400 font-bold block mb-1"><span class="flex items-center gap-1.5"><i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i> 2. Báo cáo kiểm tra:</span></span>
+                <span>Dùng <strong>Angular, TypeScript, RxJS</strong>. Xây dựng bộ lọc tìm kiếm và đối chiếu dữ liệu giao dịch chính xác.</span>
               </div>
             </div>
           </div>
-          <div>
+          <div class="mt-auto">
             <div class="flex items-center justify-between gap-2 mt-4 pt-3 border-t border-white/5">
               <div class="flex flex-wrap gap-1.5 text-[10px] code-font text-slate-400">
                 <span class="px-2 py-0.5 rounded bg-slate-950 border border-white/10">Electron</span>
@@ -716,7 +771,7 @@
         </div>
 
         <!-- Project 5: KPI DWH Dashboard -->
-        <div class="project-card-item bg-slate-900/85 border border-amber-500/30 hover:border-amber-400 rounded-3xl p-6 flex flex-col justify-between shadow-xl transition-all group" data-category="vue">
+        <div class="project-card-item bg-slate-900/85 border border-amber-500/30 hover:border-amber-400 rounded-3xl p-6 flex flex-col justify-between h-full shadow-xl transition-all group md:col-span-2 lg:col-span-3" data-category="vue">
           <div>
             <div class="flex items-center justify-between text-xs code-font text-amber-400 mb-2">
               <span>Vue.js • TypeScript • Vite</span>
@@ -724,21 +779,25 @@
             </div>
             <h3 class="text-lg font-bold text-white mb-1 code-font group-hover:text-amber-300 transition-colors">Báo Cáo KPI Tổng Quan / DWH</h3>
             <div class="text-xs text-slate-400 mb-3 code-font">Vai trò: <strong class="text-amber-400">Frontend Developer</strong> | Đối tác bên ngoài</div>
-            <p class="text-xs text-slate-300 mb-4 leading-relaxed">
-              Phát triển giao diện báo cáo tổng quan giúp ban lãnh đạo theo dõi các chỉ số kinh doanh then chốt. Xây dựng hiển thị KPI, biểu đồ trực quan, định dạng tỷ lệ phần trăm chuẩn xác.
-            </p>
-          </div>
-          <div>
-            <div class="bg-slate-950/80 rounded-2xl p-3 border border-amber-500/20 mb-4">
-              <span class="text-[11px] font-bold text-amber-400 block code-font"><span class="flex items-center gap-1.5"><i data-lucide="award" class="w-3.5 h-3.5"></i> ĐIỂM SÁNG KỸ THUẬT:</span></span>
-              <span class="text-xs text-slate-300">Giao diện tải cực nhanh với Vite, biểu đồ phân tích dữ liệu kho dữ liệu lớn (DWH) trực quan.</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-300 mb-4">
+              <div class="bg-slate-950/60 p-3 rounded-2xl border border-white/5">
+                <span class="text-amber-400 font-bold block mb-1"><span class="flex items-center gap-1.5"><i data-lucide="line-chart" class="w-3.5 h-3.5"></i> 1. Dashboard Trực Quan:</span></span>
+                <span>Theo dõi chỉ số then chốt với <strong>Vue 3, TypeScript & Vite</strong>, định dạng tỷ lệ phần trăm và tiến độ KPI chuẩn xác.</span>
+              </div>
+              <div class="bg-slate-950/60 p-3 rounded-2xl border border-white/5">
+                <span class="text-emerald-400 font-bold block mb-1"><span class="flex items-center gap-1.5"><i data-lucide="database" class="w-3.5 h-3.5"></i> 2. Kho Dữ Liệu DWH:</span></span>
+                <span>Tối ưu hóa hiển thị dữ liệu lớn từ <strong>Data Warehouse</strong>, tải mượt mà dưới 1 giây, xuất báo cáo đa chiều.</span>
+              </div>
             </div>
+          </div>
+          <div class="mt-auto">
             <div class="flex items-center justify-between gap-2 mt-4 pt-3 border-t border-white/5">
               <div class="flex flex-wrap gap-1.5 text-[10px] code-font text-slate-400">
                 <span class="px-2 py-0.5 rounded bg-slate-950 border border-white/10">Vue.js</span>
                 <span class="px-2 py-0.5 rounded bg-slate-950 border border-white/10">TypeScript</span>
                 <span class="px-2 py-0.5 rounded bg-slate-950 border border-white/10">Vite</span>
                 <span class="px-2 py-0.5 rounded bg-slate-950 border border-white/10">Data Visualization</span>
+                <span class="px-2 py-0.5 rounded bg-slate-950 border border-white/10">DWH</span>
               </div>
               <button class="btn-project-detail px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold code-font flex items-center gap-1.5 transition-all shadow-sm flex-shrink-0" data-project="kpi" title="Xem sơ đồ & giải pháp kiến trúc">
                 <i data-lucide="layers" class="w-3.5 h-3.5"></i> Blueprint

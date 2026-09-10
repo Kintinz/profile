@@ -28,15 +28,15 @@ export class ProjectFilter {
     this.container.innerHTML = `
       <div class="flex flex-wrap items-center justify-center gap-2 mb-8 code-font text-xs">
         ${filters.map(f => `
-          <button data-filter="${f.id}" class="project-filter-btn px-3.5 py-2 rounded-2xl border transition-all flex items-center gap-2 ${
+          <button data-filter="${f.id}" class="project-filter-btn h-9 px-4 rounded-2xl border transition-all inline-flex items-center gap-2 ${
             f.id === this.activeFilter
-              ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-purple-400/80 shadow-lg shadow-purple-500/25 font-bold scale-105'
-              : 'bg-slate-900/80 border-white/10 text-slate-300 hover:text-white hover:border-purple-500/30'
+              ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-purple-300 ring-2 ring-purple-500/30 shadow-lg shadow-purple-500/25 font-bold'
+              : 'bg-slate-900/80 border-white/10 text-slate-300 hover:text-white hover:border-purple-500/40 hover:bg-slate-800/80'
           }">
             ${getIconSvg(f.icon, 'w-3.5 h-3.5')}
             <span>${f.label}</span>
-            <span class="px-1.5 py-0.2 rounded-full text-[10px] ${
-              f.id === this.activeFilter ? 'bg-white/20 text-white' : 'bg-slate-950 text-slate-400'
+            <span class="px-2 py-0.5 min-w-[20px] rounded-full text-[10px] font-semibold text-center ${
+              f.id === this.activeFilter ? 'bg-white/20 text-white' : 'bg-slate-950/80 text-slate-400 border border-white/5'
             }">${f.count}</span>
           </button>
         `).join('')}

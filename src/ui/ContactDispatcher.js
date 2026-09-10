@@ -92,7 +92,7 @@ export class ContactDispatcher {
                 ${getIconSvg('briefcase', 'w-3.5 h-3.5 text-emerald-400')} MỤC ĐÍCH / VỊ TRÍ HỢP TÁC
               </label>
               <select id="disp-topic" 
-                class="w-full bg-slate-900/90 border border-white/10 focus:border-emerald-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-all">
+                class="cyber-select w-full bg-slate-900/90 border border-white/10 focus:border-emerald-400 rounded-xl px-3.5 h-11 text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-all cursor-pointer">
                 <option value="Senior .NET Fullstack Developer">Vị trí: Senior .NET Core Fullstack Developer</option>
                 <option value="Backend .NET Core & SQL Specialist">Vị trí: Backend .NET Core & Tối Ưu SQL</option>
                 <option value="Frontend Lead (Angular / Vue)">Vị trí: Frontend Developer (Angular / Vue / React)</option>
@@ -108,7 +108,7 @@ export class ContactDispatcher {
                 ${getIconSvg('zap', 'w-3.5 h-3.5 text-amber-400')} MỨC ĐỘ ƯU TIÊN
               </label>
               <select id="disp-priority" 
-                class="w-full bg-slate-900/90 border border-white/10 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all">
+                class="cyber-select w-full bg-slate-900/90 border border-white/10 focus:border-amber-400 rounded-xl px-3.5 h-11 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all cursor-pointer">
                 <option value="Standard">Tiêu Chuẩn (Phản hồi trong 24h)</option>
                 <option value="Urgent">Khẩn Cấp // Urgent (Đang mở đợt tuyển dụng gấp)</option>
                 <option value="Direct Interview">Đặt Lịch Phỏng Vấn Trực Tiếp</option>

@@ -175,7 +175,7 @@ export class TerminalSpeedTyper {
               <span class="text-slate-400 text-[10px] font-bold">COMBO:</span>
               <span id="typerCombo" class="digital-lcd font-bold text-amber-300 text-base tracking-wider">0x</span>
             </div>
-            <select id="typer-diff-select" class="bg-slate-900/90 px-2.5 py-1 rounded-xl border border-cyan-500/40 text-cyan-300 font-bold text-xs focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all cursor-pointer">
+            <select id="typer-diff-select" class="cyber-select border-cyan-500/40 text-cyan-300 font-bold text-xs cursor-pointer">
               <option value="easy">90s (Dễ)</option>
               <option value="normal" selected>60s (Chuẩn)</option>
               <option value="hard">40s (Thần Tốc)</option>

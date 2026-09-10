@@ -42,14 +42,14 @@ export class CipherLab {
             </div>
 
             <!-- Token selector tabs -->
-            <div class="flex flex-wrap gap-1.5 mb-3 text-[11px]">
-              <button id="btn-jwt-admin" class="px-2.5 py-1 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 font-bold hover:bg-purple-500/30 transition-all">
+            <div class="flex flex-wrap gap-1.5 mb-3 text-xs">
+              <button id="btn-jwt-admin" class="h-8 inline-flex items-center px-3 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-bold hover:bg-purple-500/30 transition-all shadow-sm">
                 Admin (.NET Lead)
               </button>
-              <button id="btn-jwt-expired" class="px-2.5 py-1 rounded-xl bg-slate-950 text-slate-400 border border-white/10 font-bold hover:text-white transition-all">
+              <button id="btn-jwt-expired" class="h-8 inline-flex items-center px-3 rounded-xl bg-slate-950 text-slate-400 border border-white/10 text-xs font-semibold hover:text-white hover:border-white/20 transition-all">
                 Token Hết Hạn
               </button>
-              <button id="btn-jwt-tampered" class="px-2.5 py-1 rounded-xl bg-slate-950 text-slate-400 border border-white/10 font-bold hover:text-white transition-all">
+              <button id="btn-jwt-tampered" class="h-8 inline-flex items-center px-3 rounded-xl bg-slate-950 text-slate-400 border border-white/10 text-xs font-semibold hover:text-white hover:border-white/20 transition-all">
                 Giả Mạo Chữ Ký
               </button>
             </div>
@@ -190,14 +190,14 @@ export class CipherLab {
             </div>
 
             <!-- Quick attack presets -->
-            <div class="flex flex-wrap gap-1.5 mb-3 text-[10px]">
-              <button data-type="sqli" class="regex-preset-btn px-2.5 py-1 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 font-bold hover:bg-rose-500/20 transition-all">
+            <div class="flex flex-wrap gap-1.5 mb-3 text-xs">
+              <button data-type="sqli" class="regex-preset-btn h-8 inline-flex items-center px-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 font-bold hover:bg-rose-500/20 transition-all text-xs">
                 Thử SQL Injection
               </button>
-              <button data-type="xss" class="regex-preset-btn px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold hover:bg-amber-500/20 transition-all">
+              <button data-type="xss" class="regex-preset-btn h-8 inline-flex items-center px-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold hover:bg-amber-500/20 transition-all text-xs">
                 Thử XSS Script
               </button>
-              <button data-type="phone" class="regex-preset-btn px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-bold hover:bg-emerald-500/20 transition-all">
+              <button data-type="phone" class="regex-preset-btn h-8 inline-flex items-center px-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-bold hover:bg-emerald-500/20 transition-all text-xs">
                 SĐT Việt Nam Hợp Lệ
               </button>
             </div>
@@ -287,11 +287,11 @@ export class CipherLab {
           </div>
 
           <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-            <div class="flex items-center gap-1.5">
-              <button id="btn-sim-traffic" class="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold hover:bg-amber-500/30 text-xs transition-all">
+            <div class="flex items-center gap-2">
+              <button id="btn-sim-traffic" class="h-8 inline-flex items-center px-3 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold hover:bg-amber-500/30 text-xs transition-all shadow-sm">
                 Gửi 1,000 Đơn
               </button>
-              <button id="btn-sim-cache" class="px-3 py-1.5 rounded-xl bg-slate-950 text-slate-300 border border-white/10 font-bold hover:text-white text-xs transition-all">
+              <button id="btn-sim-cache" class="h-8 inline-flex items-center px-3 rounded-xl bg-slate-950 text-slate-300 border border-white/10 text-xs font-semibold hover:text-white hover:border-white/20 transition-all">
                 Đổi Giá Realtime
               </button>
             </div>
@@ -319,16 +319,16 @@ export class CipherLab {
 
             <!-- LINQ Query Presets -->
             <div class="flex flex-wrap gap-2 mb-4 text-xs">
-              <button data-query="top-earners" class="linq-query-btn px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold hover:bg-cyan-500/30 transition-all">
+              <button data-query="top-earners" class="linq-query-btn h-8 inline-flex items-center px-3 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold hover:bg-cyan-500/30 text-xs transition-all shadow-sm">
                 Lương Cao Nhất (.Take(3))
               </button>
-              <button data-query="senior-devs" class="linq-query-btn px-3 py-1.5 rounded-xl bg-slate-950 text-slate-400 border border-white/10 font-bold hover:text-white transition-all">
+              <button data-query="senior-devs" class="linq-query-btn h-8 inline-flex items-center px-3 rounded-xl bg-slate-950 text-slate-400 border border-white/10 text-xs font-semibold hover:text-white hover:border-white/20 transition-all">
                 Senior .NET Dev (.Exp >= 3)
               </button>
-              <button data-query="group-dept" class="linq-query-btn px-3 py-1.5 rounded-xl bg-slate-950 text-slate-400 border border-white/10 font-bold hover:text-white transition-all">
+              <button data-query="group-dept" class="linq-query-btn h-8 inline-flex items-center px-3 rounded-xl bg-slate-950 text-slate-400 border border-white/10 text-xs font-semibold hover:text-white hover:border-white/20 transition-all">
                 Nhóm Theo Phòng Ban (.GroupBy)
               </button>
-              <button data-query="high-rating" class="linq-query-btn px-3 py-1.5 rounded-xl bg-slate-950 text-slate-400 border border-white/10 font-bold hover:text-white transition-all">
+              <button data-query="high-rating" class="linq-query-btn h-8 inline-flex items-center px-3 rounded-xl bg-slate-950 text-slate-400 border border-white/10 text-xs font-semibold hover:text-white hover:border-white/20 transition-all">
                 Đánh Giá Cao (.Rating >= 4.7)
               </button>
             </div>
@@ -408,11 +408,11 @@ ORDER BY [Salary] DESC;</pre>
     const setPreset = (type) => {
       this.sound.playClick(500);
       [btnAdmin, btnExp, btnTamper].forEach(b => {
-        b.className = 'px-2.5 py-1 rounded-xl bg-slate-950 text-slate-400 border border-white/10 font-bold hover:text-white transition-all';
+        b.className = 'h-8 inline-flex items-center px-3 rounded-xl bg-slate-950 text-slate-400 border border-white/10 text-xs font-semibold hover:text-white hover:border-white/20 transition-all';
       });
 
       if (type === 'admin') {
-        btnAdmin.className = 'px-2.5 py-1 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 font-bold hover:bg-purple-500/30 transition-all';
+        btnAdmin.className = 'h-8 inline-flex items-center px-3 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-bold hover:bg-purple-500/30 transition-all shadow-sm';
         rawPayload.textContent = 'eyJzdWIiOiJkdW9uZ3RpZW5kYXQiLCJuYW1lIjoiRMawxqFuZyBUaeG6v24gxJDhuqF0Iiwicm9sZSI6WyJTZW5pb3IgLk5FVCBEZXYiLCJUZWNoTGVhZCJdLCJleHAiOjE3ODkwMDAwMDB9';
         rawSign.textContent = '9kF1Z3wQxP_8j2mA7x8zVw8e5rT9';
         rawSign.className = 'text-cyan-400 font-bold';
@@ -426,7 +426,7 @@ ORDER BY [Salary] DESC;</pre>
         badge.className = 'px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1';
         badge.innerHTML = `${getIconSvg('shield-check', 'w-3 h-3')} <span>256-bit Valid</span>`;
       } else if (type === 'expired') {
-        btnExp.className = 'px-2.5 py-1 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold hover:bg-amber-500/30 transition-all';
+        btnExp.className = 'h-8 inline-flex items-center px-3 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold hover:bg-amber-500/30 transition-all shadow-sm';
         rawPayload.textContent = 'eyJzdWIiOiJkdW9uZ3RpZW5kYXQiLCJyb2xlIjoiR3Vlc3QiLCJleHAiOjE2MDAwMDAwMDB9';
         rawSign.textContent = 'Expired_Sign_Check_OldToken';
         rawSign.className = 'text-amber-400 font-bold';
@@ -439,7 +439,7 @@ ORDER BY [Salary] DESC;</pre>
         badge.className = 'px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1';
         badge.innerHTML = `${getIconSvg('alert-circle', 'w-3 h-3')} <span>Expired Token</span>`;
       } else if (type === 'tampered') {
-        btnTamper.className = 'px-2.5 py-1 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold hover:bg-rose-500/30 transition-all';
+        btnTamper.className = 'h-8 inline-flex items-center px-3 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs font-bold hover:bg-rose-500/30 transition-all shadow-sm';
         rawPayload.textContent = 'eyJzdWIiOiJoYWNrZXIiLCJyb2xlcyI6WyJzdXBlcmFkbWluIl19';
         rawSign.textContent = 'Tampered_Corrupted_Invalid_Hash';
         rawSign.className = 'text-rose-400 font-bold line-through';
@@ -746,9 +746,9 @@ ORDER BY [Salary] DESC;</pre>
     btns.forEach(btn => {
       btn.addEventListener('click', () => {
         btns.forEach(b => {
-          b.className = 'linq-query-btn px-3 py-1.5 rounded-xl bg-slate-950 text-slate-400 border border-white/10 font-bold hover:text-white transition-all';
+          b.className = 'linq-query-btn h-8 inline-flex items-center px-3 rounded-xl bg-slate-950 text-slate-400 border border-white/10 text-xs font-semibold hover:text-white hover:border-white/20 transition-all';
         });
-        btn.className = 'linq-query-btn px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold hover:bg-cyan-500/30 transition-all';
+        btn.className = 'linq-query-btn h-8 inline-flex items-center px-3 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-bold hover:bg-cyan-500/30 transition-all shadow-sm';
         activeKey = btn.getAttribute('data-query');
         this.sound.playClick(600);
         runActiveQuery();
