@@ -121,7 +121,7 @@ h3 { font-size: clamp(18px, 1.85vw, 30px); line-height: 1.3; font-weight: 700; l
 @media (max-height: 800px) and (min-width: 901px) { .main { top: 14%; } h2 { font-size: 48px; margin-bottom: 14px; } h2::after { margin-top: 12px; } .project-facts { margin: 14px 0; } .work-list { margin-top: 12px; } .work-list li { font-size: 13px; margin-bottom: 8px; } .contacts { padding: 12px 0; } .footer-bottom { height: 50px; } .identity-name { font-size: 6vw; } .is-about .identity-home { height: 25vh; } }
 @media (max-width: 1000px) { .main { left: 43%; right: 4%; } .header-caption { font-size: 8px; } .summary { grid-template-columns: 1fr; gap: 12px; margin-top: 18px; } .summary > div + div { border: 0; padding: 0; } .summary p { margin-top: 5px; } .contacts { gap: 8px 12px; font-size: 9px; } .footer-bottom { height: 52px; } .hint { font-size: 9px; } .orbit-label { padding: 10px 13px; gap: 10px; margin-left: 16px; transform-origin: -16px 0; } .identity-name { font-size: 6.5vw; } }
 @media (max-width: 600px) {
-  .sheet { --radius: min(18vw, 70px); margin-right: 10px; border-radius: 0 14px 14px 0; box-shadow: 4px 0 0 var(--layer-one), 8px 0 0 var(--layer-two); }
+  .sheet { --radius: min(39vw, 156px); --safe-bottom: env(safe-area-inset-bottom, 0px); --mobile-nav-height: calc(var(--radius) + 48px + var(--safe-bottom)); margin-right: 10px; border-radius: 0 14px 14px 0; box-shadow: 4px 0 0 var(--layer-one), 8px 0 0 var(--layer-two); }
   .header { height: 75px; padding: 0 20px; gap: 15px; }
   .monogram img { width: 52px; height: 29px; }
   .header-caption { display: none; }
@@ -129,9 +129,10 @@ h3 { font-size: clamp(18px, 1.85vw, 30px); line-height: 1.3; font-weight: 700; l
   .identity-anchor { height: 37px; }
   .identity.is-compact .identity-name { font-size: 16px; }
   .identity.is-compact .identity-role { font-size: 7px; }
-  .main { inset: 215px 23px 0 24px; }
-  .orbit { top: 143px; }
-  .orbit-label { padding: 5px 10px; font-size: 11px; gap: 8px; margin-left: 13px; transform-origin: -13px 0; }
+  .main { inset: 90px 23px var(--mobile-nav-height) 24px; }
+  .orbit { top: auto; left: 50%; bottom: calc(20px + var(--safe-bottom)); }
+  .orbit-label { width: 72px; min-height: 38px; justify-content: center; flex-direction: column; padding: 4px 3px; font-size: 9.5px; line-height: 1.2; gap: 2px; margin-left: 0; transform-origin: 0 0; transform: rotate(var(--counter-angle)) translate(-50%, 12px); }
+  .orbit-label > span { font-size: 8px; }
   .orbit-node { width: 12px; height: 12px; }
   .orbit-item.active .orbit-node { border-width: 2px; box-shadow: 0 0 0 4px var(--accent-soft); }
   .orbit-disc::after { box-shadow: none; }
@@ -182,7 +183,19 @@ h3 { font-size: clamp(18px, 1.85vw, 30px); line-height: 1.3; font-weight: 700; l
   .footer-bottom { height: 45px; }
   .hint { font-size: 8px; }
 }
-@media (max-height: 700px) and (max-width: 600px) { .main { top: 193px; } .orbit { top: 133px; } .sheet { --radius: 57px; } .is-about .identity-home { height: 85px; } .identity-name { font-size: 31px; } .identity-role { font-size: 9px; } .contacts { padding: 8px 0; } .footer-bottom { height: 37px; } h2 { font-size: 28px; margin-bottom: 10px; } .identity-home { margin-top: 10px; } .description { font-size: 11px; } }
+@media (max-height: 700px) and (max-width: 600px) { .main { top: 82px; } .is-about .identity-home { height: 85px; } .identity-name { font-size: 31px; } .identity-role { font-size: 9px; } .contacts { padding: 8px 0; } .footer-bottom { height: 37px; } h2 { font-size: 28px; margin-bottom: 10px; } .identity-home { margin-top: 10px; } .description { font-size: 11px; } }
+@media (max-height: 640px) and (max-width: 600px) {
+  .sheet { --radius: min(34vw, 112px); }
+  .header { height: 62px; }
+  .main { top: 70px; }
+  .orbit { bottom: calc(26px + var(--safe-bottom)); }
+  .orbit-label { width: 60px; }
+  .goal { line-height: 1.6; }
+  .about-copy::before { margin-bottom: 8px; }
+  .contacts { padding: 6px 0; }
+  .footer-bottom { height: 32px; }
+  .subnav { min-height: 40px; }
+}
 @media (max-height: 520px) and (min-width: 601px) { .header { height: 62px; } .main { top: 17%; } h2 { font-size: 30px; margin-bottom: 10px; } h3 { font-size: 17px; } .identity-home { margin-top: 10px; } .identity-name { font-size: 38px; } .is-about .identity-home { height: 95px; } .identity-role { font-size: 11px; } .footer-bottom { height: 34px; } .contacts { padding: 8px 0; } .project-facts { margin: 9px 0; } .description, .work-list li { font-size: 11px; } .subnav { min-height: 35px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (max-height: 520px) and (min-width: 601px) {

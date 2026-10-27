@@ -25,3 +25,15 @@ test('all orbit items stay visible and active chapter moves closest to center', 
   }
   assert.deepEqual(createState(), { section: 0, page: 0 });
 });
+
+test('mobile keeps all five chapters spread across the upper semicircle', () => {
+  for (let active = 0; active < 5; active++) {
+    const angles = orbitAngles(active, true);
+    assert.equal(angles.length, 5);
+    assert.ok(angles.every(angle => Math.sin(angle * Math.PI / 180) < 0));
+    assert.ok(Math.cos(angles[0] * Math.PI / 180) < -.9);
+    assert.ok(Math.cos(angles[4] * Math.PI / 180) > .9);
+    assert.ok(Math.abs(Math.cos(angles[2] * Math.PI / 180)) < .01);
+    assert.ok(angles.slice(1).every((angle, index) => angle - angles[index] >= 30));
+  }
+});

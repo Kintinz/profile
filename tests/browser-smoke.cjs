@@ -20,6 +20,8 @@ const theme = process.argv[5] || 'light';
       { width: 1440, height: 900 }, { width: 1366, height: 768 },
       { width: 1024, height: 768 }, { width: 768, height: 1024 },
       { width: 390, height: 844 }, { width: 375, height: 667 },
+      { width: 320, height: 568 },
+      { width: 375, height: 740 }, { width: 390, height: 820 },
       { width: 844, height: 390 },
     ];
     for (const viewport of viewports) {

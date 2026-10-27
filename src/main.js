@@ -68,7 +68,13 @@ const identityElement = document.querySelector('.identity');
 
 function aboutPages() {
   const goal = `<p class="goal">${identity.goal}</p>`;
-  const summary = `<div class="summary"><div><span class="eyebrow">${ui.experience}</span><p>${ui.company}</p><small>.NET Developer · 12/2022–09/2026</small></div><div><span class="eyebrow">${ui.expertise}</span><p>C#, ASP.NET Core, Entity Framework</p><small>Angular, React, Vue.js, TypeScript</small></div></div>`;
+  const highlights = [`<div><span class="eyebrow">${ui.experience}</span><p>${ui.company}</p><small>.NET Developer · 12/2022–09/2026</small></div>`, `<div><span class="eyebrow">${ui.expertise}</span><p>C#, ASP.NET Core, Entity Framework</p><small>Angular, React, Vue.js, TypeScript</small></div>`];
+  const summary = `<div class="summary">${highlights.join('')}</div>`;
+  if (innerWidth <= 600 && innerHeight < 820) {
+    const breakAt = preferences.language === 'en' ? identity.goal.indexOf(' and contribute') : identity.goal.indexOf(', ') + 1;
+    const goals = innerHeight < 640 ? [identity.goal.slice(0, breakAt).trim(), identity.goal.slice(breakAt).trim()] : [identity.goal];
+    return [...goals.map(text => `<div class="about-copy"><p class="goal">${text}</p></div>`), ...highlights.map(item => `<div class="about-copy"><div class="summary">${item}</div></div>`)];
+  }
   return innerWidth <= 600 || innerHeight < 620
     ? [`<div class="about-copy">${goal}</div>`, `<div class="about-copy">${summary}</div>`]
     : [`<div class="about-copy">${goal}${summary}</div>`];
@@ -79,13 +85,16 @@ function projectPages() {
   const overview = `<h3>${project.title}</h3><p class="period">${project.period}</p><div class="project-facts"><div><span class="eyebrow">${ui.role}</span><p>${project.role}</p></div><div><span class="eyebrow">${projectIndex === 4 ? ui.collaboration : ui.teamSize}</span><p>${project.team}</p></div></div><p class="description">${project.description}</p>`;
   const result = project.result ? `<div class="result"><span class="eyebrow">${ui.result}</span><p>${project.result}</p></div>` : '';
   const tech = items => `<div class="tech"><span class="eyebrow">${ui.technology}</span>${chips(items)}</div>`;
-  if (innerHeight < 520 && innerWidth > 600) {
+  if ((innerHeight < 520 && innerWidth > 600) || (innerWidth <= 600 && innerHeight < 820)) {
     const heading = `<h3>${project.title}</h3><p class="period">${project.period}</p>`;
     const facts = `<div class="project-facts"><div><span class="eyebrow">${ui.role}</span><p>${project.role}</p></div><div><span class="eyebrow">${projectIndex === 4 ? ui.collaboration : ui.teamSize}</span><p>${project.team}</p></div></div>`;
     const detailPages = project.parts
-      ? project.parts.flatMap(part => [ ...part.work.map(work => `<h3>${part.title}</h3>${list([work])}`), `<h3>${part.title}</h3>${tech(part.tech)}` ])
+      ? project.parts.flatMap(part => innerWidth <= 600 && innerHeight < 640
+        ? [`<h3>${part.title}</h3>`, ...part.work.map(work => list([work])), `<h3>${part.title}</h3>${tech(part.tech)}`]
+        : [...part.work.map(work => `<h3>${part.title}</h3>${list([work])}`), `<h3>${part.title}</h3>${tech(part.tech)}`])
       : [...(project.work || []).map(work => list([work])), ...(result ? [result] : []), tech(project.tech)];
-    return [heading + facts, `<p class="description">${project.description}</p>`, ...detailPages];
+    const opening = innerWidth <= 600 && innerHeight < 640 ? [heading, facts] : [heading + facts];
+    return [...opening, `<p class="description">${project.description}</p>`, ...detailPages];
   }
   const compact = innerWidth <= 1200 || innerHeight < 800;
   if (project.parts) return [overview, ...project.parts.map(part => `<h3>${part.title}</h3>${list(part.work)}${tech(part.tech)}`)];
@@ -96,13 +105,19 @@ function projectPages() {
 function pages() {
   switch (state.section) {
     case 0: return aboutPages();
-    case 1: return skills.map((skill, index) => `<div class="skill-group"><span class="eyebrow">${number(index + 1)} / 04</span><h3>${skill.title}</h3>${chips(skill.items)}</div>`);
+    case 1: return skills.flatMap((skill, index) => {
+      const chunk = innerWidth <= 600 && innerHeight < 820 ? (innerHeight < 640 ? 2 : 4) : skill.items.length;
+      return Array.from({ length: Math.ceil(skill.items.length / chunk) }, (_, page) => `<div class="skill-group"><span class="eyebrow">${number(index + 1)} / 04</span><h3>${skill.title}</h3>${chips(skill.items.slice(page * chunk, (page + 1) * chunk))}</div>`);
+    });
     case 2: {
-      const chunk = innerHeight < 520 ? 1 : innerWidth <= 600 || innerHeight < 700 ? 2 : 3;
+      if (innerWidth <= 600 && innerHeight < 640) return [`<h3>${ui.company}</h3><p class="period">12/2022–09/2026</p><div class="job-role">.NET Developer</div>`, ...experience.map(work => list([work]))];
+      const chunk = innerHeight < 520 || (innerWidth <= 600 && innerHeight < 820) ? 1 : innerWidth <= 600 || innerHeight < 700 ? 2 : 3;
       return Array.from({ length: Math.ceil(experience.length / chunk) }, (_, index) => `<h3>${ui.company}</h3><p class="period">12/2022–09/2026</p><div class="job-role">.NET Developer</div>${list(experience.slice(index * chunk, (index + 1) * chunk))}`);
     }
     case 3: return projectPages();
-    case 4: return [`<div class="education"><span class="eyebrow">2020 — 2023</span><h3>${ui.school}</h3><div class="education-rule"></div><span class="eyebrow">${ui.major}</span><p>${ui.subject}</p></div>`];
+    case 4: return innerWidth <= 600 && innerHeight < 640
+      ? [`<div class="education"><span class="eyebrow">2020 — 2023</span><h3>${ui.school}</h3></div>`, `<div class="education"><span class="eyebrow">${ui.major}</span><p>${ui.subject}</p></div>`]
+      : [`<div class="education"><span class="eyebrow">2020 — 2023</span><h3>${ui.school}</h3><div class="education-rule"></div><span class="eyebrow">${ui.major}</span><p>${ui.subject}</p></div>`];
     default: return [];
   }
 }
@@ -154,7 +169,7 @@ function updateOrbit() {
   sheet.style.setProperty('--accent', preferences.theme === 'dark' ? darkAccents[state.section] : section.color);
   sheet.style.setProperty('--accent-soft', preferences.theme === 'dark' ? darkSurfaces[state.section] : section.soft);
   document.querySelector('.orbit-ticks').style.transform = `rotate(${state.section * -32}deg)`;
-  orbitAngles(state.section).forEach((angle, index) => {
+  orbitAngles(state.section, matchMedia('(max-width: 600px)').matches).forEach((angle, index) => {
     const item = document.querySelector(`[data-section="${index}"]`);
     item.style.setProperty('--angle', `${angle}deg`);
     item.style.setProperty('--counter-angle', `${-angle}deg`);
@@ -277,7 +292,7 @@ document.querySelector('.orbit').addEventListener('keydown', event => {
   navigate(next);
   document.querySelector(`[data-section="${next}"]`).focus();
 });
-addEventListener('resize', () => { motion.cancel(chapter, true); render(); positionIdentity(); });
+addEventListener('resize', () => { motion.cancel(chapter, true); updateOrbit(); render(); positionIdentity(); });
 reducedMotion.addEventListener('change', () => {
   ++transitionId;
   motion.stop();
