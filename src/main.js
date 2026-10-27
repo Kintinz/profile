@@ -3,6 +3,7 @@ import logoUrl from './assets/logo-dd.svg';
 import { identity, skills, experience, projects, sections } from './content.js';
 import { createState, selectSection, movePage, orbitAngles } from './navigation.js';
 import { ProfileMotion } from './motion.js';
+import { WheelGesture, isVerticalWheel } from './wheel.js';
 
 const number = value => String(value).padStart(2, '0');
 const arrow = direction => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${direction < 0 ? 'M14 5 7 12l7 7' : 'm10 5 7 7-7 7'}"/></svg>`;
@@ -11,6 +12,8 @@ const list = items => `<ul class="work-list">${items.map(item => `<li>${item}</l
 let state = createState();
 let transitionId = 0;
 let projectIndex = 0;
+let isTransitioning = true;
+const wheel = new WheelGesture();
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const motion = new ProfileMotion(reducedMotion);
 
@@ -35,7 +38,7 @@ document.querySelector('#app').innerHTML = `
       </div>
       <footer class="footer">
         <address class="contacts"><a href="tel:${identity.phone}"><span aria-hidden="true">↗</span>${identity.phone}</a><a href="mailto:${identity.email}"><span aria-hidden="true">✉</span>${identity.email}</a><span><span aria-hidden="true">⌖</span>${identity.address}</span></address>
-        <div class="footer-bottom"><span class="hint">Chọn một mục để xoay trang</span><div class="chapter-controls"><span id="footer-number">01 <span>/ 05</span></span><button id="previous-section" class="arrow" aria-label="Mục trước">${arrow(-1)}</button><button id="next-section" class="arrow" aria-label="Mục tiếp">${arrow(1)}</button></div></div>
+        <div class="footer-bottom"><span class="hint">Chọn mục hoặc lăn chuột để chuyển trang</span><div class="chapter-controls"><span id="footer-number">01 <span>/ 05</span></span><button id="previous-section" class="arrow" aria-label="Mục trước">${arrow(-1)}</button><button id="next-section" class="arrow" aria-label="Mục tiếp">${arrow(1)}</button></div></div>
       </footer>
     </main>
     <div class="identity"><div class="identity-name">${identity.name}</div><div class="identity-role">.NET DEVELOPER</div></div>
@@ -142,8 +145,14 @@ function updateOrbit() {
   });
 }
 
+async function finishTransition(id) {
+  await Promise.all(sheet.getAnimations({ subtree: true }).map(animation => animation.finished.catch(() => {})));
+  if (id === transitionId) isTransitioning = false;
+}
+
 async function transition(nextState, identityChanged = false) {
   const id = ++transitionId;
+  isTransitioning = true;
   state = nextState;
   updateOrbit();
   if (identityChanged) positionIdentity(true);
@@ -163,6 +172,7 @@ async function transition(nextState, identityChanged = false) {
     { opacity: 1, transform: 'rotateY(0deg)', boxShadow: '0 0 0 rgba(12,32,63,0)' },
   ], { duration: 450 });
   motion.reveal(chapter);
+  await finishTransition(id);
 }
 
 function navigate(section) {
@@ -188,6 +198,16 @@ document.querySelector('#previous-section').addEventListener('click', () => navi
 document.querySelector('#next-section').addEventListener('click', () => navigate(state.section + 1));
 document.querySelector('#previous-page').addEventListener('click', () => transition(movePage(state, -1, pages().length)));
 document.querySelector('#next-page').addEventListener('click', () => transition(movePage(state, 1, pages().length)));
+addEventListener('wheel', event => {
+  if (!isVerticalWheel(event)) return;
+  event.preventDefault();
+  const direction = wheel.read(event, performance.now(), isTransitioning, innerHeight);
+  if (!direction) return;
+  const next = state.section + direction;
+  if (next < 0 || next >= sections.length) return;
+  motion.pulse(document.querySelector(`[data-section="${next}"]`));
+  navigate(next);
+}, { passive: false });
 document.querySelector('.orbit').addEventListener('keydown', event => {
   if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
   event.preventDefault();
@@ -201,6 +221,7 @@ reducedMotion.addEventListener('change', () => {
   motion.stop();
   render();
   positionIdentity();
+  isTransitioning = false;
 });
 addEventListener('hashchange', () => {
   const index = sections.findIndex(section => `#${section.id}` === location.hash);
@@ -212,3 +233,4 @@ updateOrbit();
 render();
 positionIdentity();
 motion.enter(identityElement, document.querySelector('.orbit-disc'), chapter, document.querySelector('.chapter-marker'), document.querySelector('.footer'));
+finishTransition(transitionId);
