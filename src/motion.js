@@ -32,9 +32,11 @@ export class ProfileMotion {
   }
 
   enter(identity, orbit, chapter, marker, footer) {
+    const transform = getComputedStyle(orbit).transform;
+    const base = transform === 'none' ? '' : transform;
     this.play(orbit, [
-      { opacity: 0, transform: 'translateX(-14px) scale(.96)' },
-      { opacity: 1, transform: 'translateX(0) scale(1)' },
+      { opacity: 0, transform: `translateX(-14px) scale(.96) ${base}` },
+      { opacity: 1, transform: `translateX(0) scale(1) ${base}` },
     ], { duration: 640 });
     this.play(identity, [
       { opacity: 0, transform: 'translateY(16px)' },

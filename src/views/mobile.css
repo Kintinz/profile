@@ -1,0 +1,32 @@
+.sheet[data-layout='mobile'] .mobile-dock {
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--mobile-nav-height);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  z-index: 3;
+}
+.sheet[data-layout='mobile'] .mobile-dock.is-dragging { cursor: grabbing; }
+.sheet[data-layout='mobile'] .orbit-disc { pointer-events: none; transition: transform .45s cubic-bezier(.22,1,.36,1); }
+.sheet[data-layout='mobile'] .orbit-item,
+.sheet[data-layout='mobile'] .orbit-label { transition: transform .45s cubic-bezier(.22,1,.36,1), background-color .2s; }
+.sheet[data-layout='mobile'] .orbit-item.is-off-arc { visibility: hidden; pointer-events: none; }
+.sheet[data-layout='mobile'] .is-dragging .orbit-item,
+.sheet[data-layout='mobile'] .is-dragging .orbit-label,
+.sheet[data-layout='mobile'] .is-dragging .orbit-disc { transition: none !important; }
+.mobile-selection-marker {
+  position: absolute;
+  left: 50%;
+  bottom: calc(30px + var(--safe-bottom) + var(--radius));
+  width: 0;
+  height: 0;
+  margin-left: -4px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid var(--accent);
+  pointer-events: none;
+}
+@media (max-height: 640px) { .mobile-selection-marker { bottom: calc(36px + var(--safe-bottom) + var(--radius)); } }

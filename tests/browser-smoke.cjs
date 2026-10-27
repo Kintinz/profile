@@ -1,5 +1,6 @@
 // node tests/browser-smoke.cjs [Playwright module path] [preview URL]
 const assert = require('node:assert/strict');
+const { selectChapter } = require('./browser-helpers.cjs');
 const { chromium } = require(process.argv[2] || 'playwright');
 const url = process.argv[3] || 'http://127.0.0.1:4173/profile/';
 const language = process.argv[4] || 'vi';
@@ -30,9 +31,10 @@ const theme = process.argv[5] || 'light';
       assert.equal(await page.locator('html').getAttribute('lang'), language);
       assert.equal(await page.locator('html').getAttribute('data-theme'), theme);
       await page.evaluate(() => document.fonts.ready);
+      assert.equal(await page.locator('.footer-bottom, .chapter-controls, #footer-number').count(), 0);
       assert.ok(await page.locator('.monogram img').evaluate(image => image.complete && image.naturalWidth > 0), 'header logo should load at the Pages base path');
       for (let section = 0; section < 5; section++) {
-        await page.locator(`[data-section="${section}"] .orbit-label`).click();
+        await selectChapter(page, section);
         assert.equal(await page.locator('[aria-current="page"]').getAttribute('data-section'), String(section));
         for (let project = 0; project < (section === 3 ? 5 : 1); project++) {
           if (project > 0) await page.getByRole('button', { name: ui.nextProject, exact: true }).click();
