@@ -1,839 +1,193 @@
-import { initIcons, getIconSvg } from './utils/icons.js';
-import { CyberBackground } from './scene/CyberBackground.js';
-import { CyberSound } from './audio/CyberSound.js';
+import './style.css';
+import { identity, skills, experience, projects, sections } from './content.js';
+import { createState, selectSection, movePage, orbitAngles } from './navigation.js';
 
-// 6 Dev & Command Arenas
-import { DevQuizArena } from './games/DevQuizArena.js';
-import { TerminalSpeedTyper } from './games/TerminalSpeedTyper.js';
-import { CodeBugHunter } from './games/CodeBugHunter.js';
-import { SqlQueryForge } from './games/SqlQueryForge.js';
-import { GitBranchMaster } from './games/GitBranchMaster.js';
-import { MemoryMatrix } from './games/MemoryMatrix.js';
+const number = value => String(value).padStart(2, '0');
+const arrow = direction => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${direction < 0 ? 'M14 5 7 12l7 7' : 'm10 5 7 7-7 7'}"/></svg>`;
+const chips = items => `<ul class="chips">${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
+const list = items => `<ul class="work-list">${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
+let state = createState();
+let transitionId = 0;
+let projectIndex = 0;
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
-// 10 Casual & Arcade Games
-import { CyberSnake } from './games/CyberSnake.js';
-import { CyberDefender } from './games/CyberDefender.js';
-import { FirewallBreaker } from './games/FirewallBreaker.js';
-import { NeonRunner } from './games/NeonRunner.js';
-import { FlappyDrone } from './games/FlappyDrone.js';
-import { Cyber2048 } from './games/Cyber2048.js';
-import { CyberPong } from './games/CyberPong.js';
-import { WhackABug } from './games/WhackABug.js';
-import { TetrisMatrix } from './games/TetrisMatrix.js';
-import { CyberMinesweeper } from './games/CyberMinesweeper.js';
+document.querySelector('#app').innerHTML = `
+  <div class="sheet">
+    <header class="header">
+      <a class="monogram" href="#about" aria-label="Dương Tiến Đạt — Về bản thân">DĐ</a>
+      <span class="header-rule"></span><span class="identity-anchor" aria-hidden="true"></span>
+      <span class="header-caption">Hồ sơ cá nhân <i></i></span>
+    </header>
+    <nav class="orbit" aria-label="Các mục hồ sơ">
+      <div class="orbit-disc" aria-hidden="true"><div class="orbit-ticks"></div><div class="orbit-core"></div></div>
+      ${sections.map((section, index) => `<button class="orbit-item" data-section="${index}" aria-controls="chapter" aria-label="${section.label}"><span class="orbit-node"></span><span class="orbit-label"><span>${number(index + 1)}</span>${section.label}</span></button>`).join('')}
+    </nav>
+    <main class="main">
+      <div class="chapter-marker"><span id="chapter-number">01 / 05</span><i></i><span id="chapter-label">Về bản thân</span></div>
+      <div class="identity-home" aria-hidden="true"></div>
+      <div class="page-stage"><section id="chapter" tabindex="-1" aria-label="Về bản thân"></section></div>
+      <div class="subnav" hidden>
+        <div id="subnav-label"></div>
+        <div class="subnav-buttons"><button id="previous-page" class="arrow" aria-label="Trang nội dung trước">${arrow(-1)}</button><button id="next-page" class="arrow" aria-label="Trang nội dung tiếp">${arrow(1)}</button></div>
+      </div>
+      <footer class="footer">
+        <address class="contacts"><a href="tel:${identity.phone}"><span aria-hidden="true">↗</span>${identity.phone}</a><a href="mailto:${identity.email}"><span aria-hidden="true">✉</span>${identity.email}</a><span><span aria-hidden="true">⌖</span>${identity.address}</span></address>
+        <div class="footer-bottom"><span class="hint">Chọn một mục để xoay trang</span><div class="chapter-controls"><span id="footer-number">01 <span>/ 05</span></span><button id="previous-section" class="arrow" aria-label="Mục trước">${arrow(-1)}</button><button id="next-section" class="arrow" aria-label="Mục tiếp">${arrow(1)}</button></div></div>
+      </footer>
+    </main>
+    <div class="identity"><div class="identity-name">${identity.name}</div><div class="identity-role">.NET DEVELOPER</div></div>
+    <p class="sr-only" role="status" id="announcement"></p>
+  </div>`;
 
-import { CipherLab } from './ciphers/CipherLab.js';
-import { HackerTerminal } from './ciphers/HackerTerminal.js';
-import { Achievements } from './ui/Achievements.js';
-import { KonamiCode } from './ui/KonamiCode.js';
-import { showGameGuideModal, getInlineGuideCardHtml } from './ui/GameGuideModal.js';
-import { WebEffects } from './ui/WebEffects.js';
-import { ThemeSwitcher } from './ui/ThemeSwitcher.js';
-import { ProjectDetailModal } from './ui/ProjectDetailModal.js';
-import { ResumeModal } from './ui/ResumeModal.js';
-import { CommandPalette } from './ui/CommandPalette.js';
-import { ContactDispatcher } from './ui/ContactDispatcher.js';
-import { SystemTelemetry } from './ui/SystemTelemetry.js';
-import { DevIdCardModal } from './ui/DevIdCardModal.js';
-import { ProjectFilter } from './ui/ProjectFilter.js';
+const sheet = document.querySelector('.sheet');
+const chapter = document.querySelector('#chapter');
+const identityElement = document.querySelector('.identity');
 
-class App {
-  constructor() {
-    this.activeCategory = 'casual'; // 'casual' | 'dev'
-    this.activeGame = 'snake'; // Default casual game
-    this.activeDevGame = 'quiz'; // Default dev game
-    this.init();
+function aboutPages() {
+  const goal = `<p class="goal">${identity.goal}</p>`;
+  const summary = `<div class="summary"><div><span class="eyebrow">Kinh nghiệm</span><p>Công ty Cổ phần Kids Plaza</p><small>.NET Developer · 12/2022–09/2026</small></div><div><span class="eyebrow">Chuyên môn</span><p>C#, ASP.NET Core, Entity Framework</p><small>Angular, React, Vue.js, TypeScript</small></div></div>`;
+  return innerWidth <= 600 || innerHeight < 620
+    ? [`<div class="about-copy">${goal}</div>`, `<div class="about-copy">${summary}</div>`]
+    : [`<div class="about-copy">${goal}${summary}</div>`];
+}
+
+function projectPages() {
+  const project = projects[projectIndex];
+  const overview = `<h3>${project.title}</h3><p class="period">${project.period}</p><div class="project-facts"><div><span class="eyebrow">Vai trò</span><p>${project.role}</p></div><div><span class="eyebrow">${projectIndex === 4 ? 'Phối hợp' : 'Quy mô team'}</span><p>${project.team}</p></div></div><p class="description">${project.description}</p>`;
+  const result = project.result ? `<div class="result"><span class="eyebrow">Kết quả</span><p>${project.result}</p></div>` : '';
+  const tech = items => `<div class="tech"><span class="eyebrow">Công nghệ</span>${chips(items)}</div>`;
+  if (innerHeight < 520 && innerWidth > 600) {
+    const heading = `<h3>${project.title}</h3><p class="period">${project.period}</p>`;
+    const facts = `<div class="project-facts"><div><span class="eyebrow">Vai trò</span><p>${project.role}</p></div><div><span class="eyebrow">${projectIndex === 4 ? 'Phối hợp' : 'Quy mô team'}</span><p>${project.team}</p></div></div>`;
+    const detailPages = project.parts
+      ? project.parts.flatMap(part => [ ...part.work.map(work => `<h3>${part.title}</h3>${list([work])}`), `<h3>${part.title}</h3>${tech(part.tech)}` ])
+      : [...(project.work || []).map(work => list([work])), ...(result ? [result] : []), tech(project.tech)];
+    return [heading + facts, `<p class="description">${project.description}</p>`, ...detailPages];
   }
+  const compact = innerWidth <= 1200 || innerHeight < 800;
+  if (project.parts) return [overview, ...project.parts.map(part => `<h3>${part.title}</h3>${list(part.work)}${tech(part.tech)}`)];
+  const details = `${project.work ? list(project.work) : ''}${result}${tech(project.tech)}`;
+  return compact ? [overview, `<h3 class="continuation">${project.title}</h3>${details}`] : [`${overview}${details}`];
+}
 
-  init() {
-    this.sound = new CyberSound();
-    this.achievements = new Achievements(this.sound);
-    this.konami = new KonamiCode(this.achievements, this.sound);
-    this.webEffects = new WebEffects();
-    this.themeSwitcher = new ThemeSwitcher(this.sound);
-    this.projectModal = new ProjectDetailModal(this.sound);
-    this.resumeModal = new ResumeModal(this.sound);
-    this.devIdModal = new DevIdCardModal(this.sound, this.achievements);
-    this.commandPalette = new CommandPalette(this);
-    this.telemetry = new SystemTelemetry(this.sound);
-    this.contactDispatcher = new ContactDispatcher('contact-dispatcher-root', this.sound, this.achievements);
-    this.projectFilter = new ProjectFilter(this.sound);
-    this.bindBackToTop();
-
-    setTimeout(() => {
-      this.achievements.unlock('first_contact', 'First Contact', 'Chào mừng bạn đã gia nhập mạng lưới Nexus Matrix!', 'zap');
-    }, 1200);
-
-    const bgContainer = document.getElementById('three-canvas-container');
-    if (bgContainer) {
-      this.background3D = new CyberBackground(bgContainer);
+function pages() {
+  switch (state.section) {
+    case 0: return aboutPages();
+    case 1: return skills.map((skill, index) => `<div class="skill-group"><span class="eyebrow">${number(index + 1)} / 04</span><h3>${skill.title}</h3>${chips(skill.items)}</div>`);
+    case 2: {
+      const chunk = innerHeight < 520 ? 1 : innerWidth <= 600 || innerHeight < 700 ? 2 : 3;
+      return Array.from({ length: Math.ceil(experience.length / chunk) }, (_, index) => `<h3>Công ty Cổ phần Kids Plaza</h3><p class="period">12/2022–09/2026</p><div class="job-role">.NET Developer</div>${list(experience.slice(index * chunk, (index + 1) * chunk))}`);
     }
-
-    // Initialize Casual Games
-    this.initCasualGames();
-
-    // Initialize Dev Games
-    this.initDevGames();
-
-    // Technical Labs
-    this.initCipherLab();
-    this.initTerminal();
-
-    // Event Binders
-    this.bindAudioControls();
-    this.bindCategorySwitcher();
-    this.bindCasualTabSwitch();
-    this.bindDevTabSwitch();
-    this.bindGlobalControls();
-    this.initGameGuides();
-
-    setTimeout(() => initIcons(), 100);
-  }
-
-  // ==========================================
-  // CASUAL GAMES INITIALIZATION
-  // ==========================================
-  initCasualGames() {
-    // 1. Cyber Snake
-    const snakeCanvas = document.getElementById('canvas-snake');
-    if (snakeCanvas) {
-      const scoreEl = document.getElementById('snake-score-display');
-      const bestEl = document.getElementById('snake-best-display');
-      this.snake = new CyberSnake(
-        snakeCanvas,
-        this.sound,
-        (score, high) => {
-          if (scoreEl) scoreEl.innerText = score;
-          if (bestEl) bestEl.innerText = high;
-        },
-        (score) => {
-          if (score >= 100) {
-            this.achievements.unlock('snake_master', 'Cyber Snake Master', 'Đạt 100 điểm trong Rắn Săn Mồi Neon!', 'activity');
-          }
-        }
-      );
-
-      document.getElementById('snake-diff-select')?.addEventListener('change', (e) => {
-        this.snake.setDifficulty(e.target.value);
-        this.snake.reset();
-      });
-
-      document.getElementById('btn-snake-pause')?.addEventListener('click', (e) => {
-        const paused = this.snake.togglePause();
-        e.target.innerText = paused ? 'Tiếp Tục' : 'Tạm Dừng';
-      });
-      document.getElementById('btn-snake-restart')?.addEventListener('click', () => {
-        this.snake.reset();
-        const pauseBtn = document.getElementById('btn-snake-pause');
-        if (pauseBtn) pauseBtn.innerText = 'Tạm Dừng';
-      });
-
-      // Mobile D-pad
-      document.getElementById('btn-snake-up')?.addEventListener('click', () => {
-        if (this.snake.dir.y === 0) this.snake.nextDir = { x: 0, y: -1 };
-      });
-      document.getElementById('btn-snake-down')?.addEventListener('click', () => {
-        if (this.snake.dir.y === 0) this.snake.nextDir = { x: 0, y: 1 };
-      });
-      document.getElementById('btn-snake-left')?.addEventListener('click', () => {
-        if (this.snake.dir.x === 0) this.snake.nextDir = { x: -1, y: 0 };
-      });
-      document.getElementById('btn-snake-right')?.addEventListener('click', () => {
-        if (this.snake.dir.x === 0) this.snake.nextDir = { x: 1, y: 0 };
-      });
-
-      // Start default game
-      this.snake.start();
-    }
-
-    // 2. Cyber Defender
-    const defenderCanvas = document.getElementById('canvas-defender');
-    if (defenderCanvas) {
-      const scoreEl = document.getElementById('defender-score-display');
-      const hpEl = document.getElementById('defender-hp-display');
-      this.defender = new CyberDefender(
-        defenderCanvas,
-        this.sound,
-        (score, high, health) => {
-          if (scoreEl) scoreEl.innerText = score;
-          if (hpEl) hpEl.innerText = `${health}%`;
-        },
-        (score) => {
-          if (score >= 1500) {
-            this.achievements.unlock('galaxy_guardian', 'Space Guardian', 'Bắn hạ hạm đội virus vũ trụ xuất sắc!', 'rocket');
-          }
-        }
-      );
-
-      document.getElementById('defender-diff-select')?.addEventListener('change', (e) => {
-        this.defender.setDifficulty(e.target.value);
-        this.defender.reset();
-        const pauseBtn = document.getElementById('btn-defender-pause');
-        if (pauseBtn) pauseBtn.innerText = 'Tạm Dừng';
-      });
-      document.getElementById('btn-defender-pause')?.addEventListener('click', (e) => {
-        const paused = this.defender.togglePause();
-        e.target.innerText = paused ? 'Tiếp Tục' : 'Tạm Dừng';
-      });
-      document.getElementById('btn-defender-restart')?.addEventListener('click', () => {
-        this.defender.reset();
-        const pauseBtn = document.getElementById('btn-defender-pause');
-        if (pauseBtn) pauseBtn.innerText = 'Tạm Dừng';
-      });
-    }
-
-    // 3. Firewall Breaker
-    const breakerCanvas = document.getElementById('canvas-breaker');
-    if (breakerCanvas) {
-      const scoreEl = document.getElementById('breaker-score-display');
-      const livesEl = document.getElementById('breaker-lives-display');
-      this.breaker = new FirewallBreaker(
-        breakerCanvas,
-        this.sound,
-        (score, lives) => {
-          if (scoreEl) scoreEl.innerText = score;
-          if (livesEl) livesEl.innerText = lives;
-        },
-        (score) => {
-          if (score >= 2000) {
-            this.achievements.unlock('brick_destroyer', 'Firewall Breaker', 'Phá tan hàng rào tường lửa cấp cao!', 'boxes');
-          }
-        }
-      );
-
-      document.getElementById('breaker-diff-select')?.addEventListener('change', (e) => {
-        this.breaker.setDifficulty(e.target.value);
-        this.breaker.reset();
-        const pauseBtn = document.getElementById('btn-breaker-pause');
-        if (pauseBtn) pauseBtn.innerText = 'Tạm Dừng';
-      });
-      document.getElementById('btn-breaker-pause')?.addEventListener('click', (e) => {
-        const paused = this.breaker.togglePause();
-        e.target.innerText = paused ? 'Tiếp Tục' : 'Tạm Dừng';
-      });
-      document.getElementById('btn-breaker-restart')?.addEventListener('click', () => {
-        this.breaker.reset();
-        const pauseBtn = document.getElementById('btn-breaker-pause');
-        if (pauseBtn) pauseBtn.innerText = 'Tạm Dừng';
-      });
-    }
-
-    // 4. Neon Runner 3D
-    const runnerCanvas = document.getElementById('canvas-runner');
-    if (runnerCanvas) {
-      const distEl = document.getElementById('runner-dist-display');
-      const nitroEl = document.getElementById('runner-nitro-display');
-      this.runner = new NeonRunner(
-        runnerCanvas,
-        this.sound,
-        (dist, high, nitro) => {
-          if (distEl) distEl.innerText = `${dist}m`;
-          if (nitroEl) nitroEl.innerText = `${nitro}%`;
-        },
-        (dist) => {
-          if (dist >= 1000) {
-            this.achievements.unlock('speed_demon', 'Hyperspeed Runner', 'Lướt hơn 1000m trên cao tốc ánh sáng!', 'gauge');
-          }
-        }
-      );
-
-      document.getElementById('runner-diff-select')?.addEventListener('change', (e) => {
-        this.runner.setDifficulty(e.target.value);
-        this.runner.reset();
-      });
-      document.getElementById('btn-runner-restart')?.addEventListener('click', () => {
-        this.runner.reset();
-      });
-    }
-
-    // 5. Flappy Drone
-    const flappyCanvas = document.getElementById('canvas-flappy');
-    if (flappyCanvas) {
-      const scoreEl = document.getElementById('flappy-score-display');
-      const bestEl = document.getElementById('flappy-best-display');
-      this.flappy = new FlappyDrone(
-        flappyCanvas,
-        this.sound,
-        (score, high) => {
-          if (scoreEl) scoreEl.innerText = score;
-          if (bestEl) bestEl.innerText = high;
-        },
-        (score) => {
-          if (score >= 15) {
-            this.achievements.unlock('drone_pilot', 'Elite Drone Pilot', 'Vượt qua 15 cổng laser bảo mật!', 'navigation');
-          }
-        }
-      );
-
-      document.getElementById('flappy-diff-select')?.addEventListener('change', (e) => {
-        this.flappy.setDifficulty(e.target.value);
-        this.flappy.reset();
-        const pauseBtn = document.getElementById('btn-flappy-pause');
-        if (pauseBtn) pauseBtn.innerText = 'Tạm Dừng';
-      });
-      document.getElementById('btn-flappy-pause')?.addEventListener('click', (e) => {
-        const paused = this.flappy.togglePause();
-        e.target.innerText = paused ? 'Tiếp Tục' : 'Tạm Dừng';
-      });
-      document.getElementById('btn-flappy-restart')?.addEventListener('click', () => {
-        this.flappy.reset();
-        const pauseBtn = document.getElementById('btn-flappy-pause');
-        if (pauseBtn) pauseBtn.innerText = 'Tạm Dừng';
-      });
-    }
-
-    // 6. Matrix 2048
-    const root2048 = document.getElementById('game-2048-root');
-    if (root2048) {
-      this.cyber2048 = new Cyber2048(root2048, this.sound, null, (score) => {
-        if (score >= 2048) {
-          this.achievements.unlock('matrix_2048', 'Quantum Fusion', 'Hợp nhất thành công khối dữ liệu 2048TB!', 'binary');
-        }
-      });
-    }
-
-    // 7. Cyber Pong
-    const pongCanvas = document.getElementById('canvas-pong');
-    if (pongCanvas) {
-      const pScoreEl = document.getElementById('pong-player-score');
-      const aiScoreEl = document.getElementById('pong-ai-score');
-      this.pong = new CyberPong(
-        pongCanvas,
-        this.sound,
-        (pScore, aiScore) => {
-          if (pScoreEl) pScoreEl.innerText = pScore;
-          if (aiScoreEl) aiScoreEl.innerText = aiScore;
-        },
-        (pScore, aiScore, won) => {
-          if (won) {
-            this.achievements.unlock('pong_champion', 'Cyber Pong Champion', 'Chiến thắng vang dội trước AI trong bóng bàn neon!', 'circle-dot');
-          }
-        }
-      );
-
-      document.getElementById('pong-diff-select')?.addEventListener('change', (e) => {
-        this.pong.setDifficulty(e.target.value);
-        this.pong.reset();
-      });
-
-      document.getElementById('btn-pong-pause')?.addEventListener('click', (e) => {
-        const paused = this.pong.togglePause();
-        e.target.innerText = paused ? 'Tiếp Tục' : 'Tạm Dừng';
-      });
-      document.getElementById('btn-pong-restart')?.addEventListener('click', () => {
-        this.pong.reset();
-        const pauseBtn = document.getElementById('btn-pong-pause');
-        if (pauseBtn) pauseBtn.innerText = 'Tạm Dừng';
-      });
-    }
-
-    // 8. Whack-A-Bug
-    const rootWhack = document.getElementById('game-whack-root');
-    if (rootWhack) {
-      this.whack = new WhackABug(rootWhack, this.sound, null, (score) => {
-        if (score >= 3000) {
-          this.achievements.unlock('bug_terminator', 'Bug Terminator', 'Đạt trên 3000 điểm diệt bọ máy chủ!', 'target');
-        }
-      });
-    }
-
-    // 9. Tetris Matrix
-    const tetrisCanvas = document.getElementById('canvas-tetris');
-    if (tetrisCanvas) {
-      const scoreEl = document.getElementById('tetris-score-display');
-      const linesEl = document.getElementById('tetris-lines-display');
-      const bestEl = document.getElementById('tetris-best-display');
-      this.tetris = new TetrisMatrix(
-        tetrisCanvas,
-        this.sound,
-        (score, high, lines, level) => {
-          if (scoreEl) scoreEl.innerText = score;
-          if (linesEl) linesEl.innerText = lines;
-          if (bestEl) bestEl.innerText = high;
-        },
-        (score) => {
-          if (score >= 2000) {
-            this.achievements.unlock('tetris_god', 'Neon Tetris Grandmaster', 'Đạt trên 2000 điểm xếp gạch Neon!', 'shapes');
-          }
-        }
-      );
-
-      document.getElementById('tetris-diff-select')?.addEventListener('change', (e) => {
-        this.tetris.setDifficulty(e.target.value);
-        this.tetris.reset();
-        const pauseBtn = document.getElementById('btn-tetris-pause');
-        if (pauseBtn) pauseBtn.innerText = 'Tạm Dừng';
-      });
-      document.getElementById('btn-tetris-pause')?.addEventListener('click', (e) => {
-        const paused = this.tetris.togglePause();
-        e.target.innerText = paused ? 'Tiếp Tục' : 'Tạm Dừng';
-      });
-      document.getElementById('btn-tetris-restart')?.addEventListener('click', () => {
-        this.tetris.reset();
-        const pauseBtn = document.getElementById('btn-tetris-pause');
-        if (pauseBtn) pauseBtn.innerText = 'Tạm Dừng';
-      });
-
-      // Mobile Tetris buttons
-      document.getElementById('btn-tetris-left')?.addEventListener('click', () => this.tetris.move(-1));
-      document.getElementById('btn-tetris-right')?.addEventListener('click', () => this.tetris.move(1));
-      document.getElementById('btn-tetris-rotate')?.addEventListener('click', () => this.tetris.rotate());
-      document.getElementById('btn-tetris-drop')?.addEventListener('click', () => this.tetris.drop());
-      document.getElementById('btn-tetris-hard')?.addEventListener('click', () => this.tetris.hardDrop());
-    }
-
-    // 10. Cyber Minesweeper
-    const rootMines = document.getElementById('game-mines-root');
-    if (rootMines) {
-      this.mines = new CyberMinesweeper(rootMines, this.sound, null, (won) => {
-        if (won) {
-          this.achievements.unlock('mine_defuser', 'Quantum Defuser', 'Gỡ bom lõi lượng tử an toàn 100%!', 'shield-alert');
-        }
-      });
-    }
-  }
-
-  // ==========================================
-  // DEV GAMES INITIALIZATION
-  // ==========================================
-  initDevGames() {
-    // 1. Dev Quiz Arena
-    const quizRoot = document.getElementById('quiz-arena-root');
-    if (quizRoot) {
-      this.devQuiz = new DevQuizArena(quizRoot, this.sound, (finalScore) => {
-        if (finalScore >= 500) {
-          this.achievements.unlock('git_grandmaster', 'Git & Architecture Master', 'Đạt điểm số xuất sắc trong Đấu Trí Lập Trình!', 'terminal');
-        }
-      });
-    }
-
-    // 2. Terminal Speed Typer
-    const canvasTyper = document.getElementById('canvas-typer');
-    if (canvasTyper) {
-      this.speedTyper = new TerminalSpeedTyper('canvas-typer');
-    }
-
-    // 3. Code Bug Hunter
-    const canvasHunter = document.getElementById('canvas-hunter');
-    if (canvasHunter) {
-      this.bugHunter = new CodeBugHunter('canvas-hunter');
-    }
-
-    // 4. SQL Query Forge
-    const canvasSql = document.getElementById('canvas-sql');
-    if (canvasSql) {
-      this.sqlForge = new SqlQueryForge('canvas-sql');
-    }
-
-    // 5. Git Branch Master
-    const canvasGit = document.getElementById('canvas-git');
-    if (canvasGit) {
-      this.gitMaster = new GitBranchMaster('canvas-git');
-    }
-
-    // 6. Memory Matrix
-    const matrixRoot = document.getElementById('memory-matrix-root');
-    if (matrixRoot) {
-      this.memoryMatrix = new MemoryMatrix(matrixRoot, this.sound, (moves) => {
-        this.achievements.unlock('matrix_mind', 'Quantum Memory', `Hoàn thành Neon Memory Matrix trong ${moves} bước!`, 'brain');
-      });
-    }
-  }
-
-  // ==========================================
-  // TECHNICAL LABS INITIALIZATION
-  // ==========================================
-  initCipherLab() {
-    const container = document.getElementById('cipher-lab-root');
-    if (!container) return;
-
-    this.cipherLab = new CipherLab(container, this.sound, (type, count) => {
-      this.achievements.unlock('code_breaker', 'Cipher Specialist', `Giải mã thành công công cụ: ${type.toUpperCase()}!`, 'lock');
-      if (count >= 3) {
-        this.achievements.unlock('quantum_master', 'The Grand Cryptographer', 'Thao tác thành công tất cả công cụ phòng lab!', 'trophy');
-      }
-    });
-  }
-
-  initTerminal() {
-    const container = document.getElementById('hacker-terminal-root');
-    if (!container) return;
-
-    let commandCount = 0;
-    this.terminal = new HackerTerminal(container, this.sound, () => {
-      commandCount++;
-      if (commandCount >= 3) {
-        this.achievements.unlock('terminal_hacker', 'Console Infiltrator', 'Đã thao tác thành thạo trên Hacker Terminal CLI!', 'terminal');
-      }
-    });
-  }
-
-  // ==========================================
-  // CATEGORY & TAB SWITCHING LOGIC
-  // ==========================================
-  bindCategorySwitcher() {
-    const btnCasual = document.getElementById('btn-cat-casual');
-    const btnDev = document.getElementById('btn-cat-dev');
-    const casualTabs = document.getElementById('casual-tabs-wrapper');
-    const devTabs = document.getElementById('dev-tabs-wrapper');
-
-    if (!btnCasual || !btnDev) return;
-
-    btnCasual.addEventListener('click', () => {
-      if (this.activeCategory === 'casual') return;
-      this.activeCategory = 'casual';
-      this.sound.playClick(600);
-
-      btnCasual.className = 'px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-400 to-emerald-400 text-slate-950 font-black text-xs code-font shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all inline-flex items-center gap-2';
-      btnDev.className = 'px-5 py-2.5 rounded-xl text-slate-400 hover:text-white font-bold text-xs code-font transition-all inline-flex items-center gap-2 hover:bg-white/5';
-
-      casualTabs?.classList.remove('hidden');
-      casualTabs?.classList.add('flex');
-      devTabs?.classList.add('hidden');
-      devTabs?.classList.remove('flex');
-
-      // Tạm dừng game dev đang chạy và kích hoạt game giải trí
-      this.pauseAllGames();
-      this.switchCasualGame(this.activeGame);
-    });
-
-    btnDev.addEventListener('click', () => {
-      if (this.activeCategory === 'dev') return;
-      this.activeCategory = 'dev';
-      this.sound.playClick(600);
-
-      btnDev.className = 'px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-400 text-slate-950 font-black text-xs code-font shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all inline-flex items-center gap-2';
-      btnCasual.className = 'px-5 py-2.5 rounded-xl text-slate-400 hover:text-white font-bold text-xs code-font transition-all inline-flex items-center gap-2 hover:bg-white/5';
-
-      casualTabs?.classList.add('hidden');
-      casualTabs?.classList.remove('flex');
-      devTabs?.classList.remove('hidden');
-      devTabs?.classList.add('flex');
-
-      this.pauseAllGames();
-      this.switchDevGame(this.activeDevGame);
-    });
-  }
-
-  bindCasualTabSwitch() {
-    const casualKeys = ['snake', 'defender', 'breaker', 'runner', 'flappy', '2048', 'pong', 'whack', 'tetris', 'mines'];
-
-    casualKeys.forEach(key => {
-      const btn = document.getElementById(`tab-btn-${key}`);
-      btn?.addEventListener('click', () => {
-        this.switchCasualGame(key);
-      });
-    });
-  }
-
-  switchCasualGame(key) {
-    this.pauseAllGames();
-    this.activeGame = key;
-    this.sound.playClick(540);
-
-    const casualKeys = ['snake', 'defender', 'breaker', 'runner', 'flappy', '2048', 'pong', 'whack', 'tetris', 'mines'];
-
-    // Ẩn tất cả view
-    casualKeys.forEach(k => {
-      const btn = document.getElementById(`tab-btn-${k}`);
-      const view = document.getElementById(`game-${k}-view`);
-      if (btn) {
-        btn.className = 'px-3.5 py-2 rounded-xl bg-slate-950/80 border border-white/10 text-slate-300 hover:text-white hover:border-cyan-500/30 hover:bg-slate-900 font-bold transition-all inline-flex items-center gap-2 hover:scale-105';
-      }
-      if (view) view.classList.add('hidden');
-    });
-
-    // Ẩn view của các dev game
-    ['quiz', 'typer', 'hunter', 'sql', 'git', 'matrix'].forEach(k => {
-      document.getElementById(`game-${k}-view`)?.classList.add('hidden');
-    });
-
-    // Bật view được chọn với màu neon riêng biệt
-    const activeBtn = document.getElementById(`tab-btn-${key}`);
-    const activeView = document.getElementById(`game-${key}-view`);
-
-    const activeColors = {
-      snake: 'bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.4)]',
-      defender: 'bg-gradient-to-r from-sky-500 to-cyan-400 text-slate-950 shadow-[0_0_20px_rgba(14,165,233,0.4)]',
-      breaker: 'bg-gradient-to-r from-teal-500 to-emerald-400 text-slate-950 shadow-[0_0_20px_rgba(20,184,166,0.4)]',
-      runner: 'bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.4)]',
-      flappy: 'bg-gradient-to-r from-cyan-400 to-sky-300 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.4)]',
-      '2048': 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]',
-      pong: 'bg-gradient-to-r from-pink-500 to-rose-400 text-white shadow-[0_0_20px_rgba(236,72,153,0.4)]',
-      whack: 'bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-[0_0_20px_rgba(244,63,94,0.4)]',
-      tetris: 'bg-gradient-to-r from-amber-500 to-orange-400 text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.4)]',
-      mines: 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 shadow-[0_0_20px_rgba(5,150,105,0.4)]'
-    };
-
-    if (activeBtn) {
-      const col = activeColors[key] || 'bg-cyan-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.4)]';
-      activeBtn.className = `px-3.5 py-2 rounded-xl ${col} font-black transition-all inline-flex items-center gap-2 scale-105`;
-    }
-    if (activeView) {
-      activeView.classList.remove('hidden');
-    }
-
-    // Kích hoạt lại hoặc resize game được chọn
-    setTimeout(() => {
-      if (key === 'snake' && this.snake) {
-        if (!this.snake.isRunning) this.snake.start(); else this.snake.resize();
-      } else if (key === 'defender' && this.defender) {
-        if (!this.defender.isPlaying) this.defender.start(); else this.defender.resize();
-      } else if (key === 'breaker' && this.breaker) {
-        if (!this.breaker.isPlaying) this.breaker.start(); else this.breaker.resize();
-      } else if (key === 'runner' && this.runner) {
-        if (!this.runner.isPlaying) this.runner.start(); else this.runner.resize();
-      } else if (key === 'flappy' && this.flappy) {
-        if (!this.flappy.isPlaying) this.flappy.start(); else this.flappy.resize();
-      } else if (key === '2048' && this.cyber2048) {
-        this.cyber2048.resume();
-      } else if (key === 'pong' && this.pong) {
-        if (!this.pong.isPlaying) this.pong.start(); else this.pong.resize();
-      } else if (key === 'whack' && this.whack) {
-        this.whack.resume();
-      } else if (key === 'tetris' && this.tetris) {
-        if (!this.tetris.isPlaying) this.tetris.start(); else this.tetris.resize();
-      } else if (key === 'mines' && this.mines) {
-        this.mines.resume();
-      }
-      initIcons();
-    }, 60);
-  }
-
-  bindDevTabSwitch() {
-    const devKeys = ['quiz', 'typer', 'hunter', 'sql', 'git', 'matrix'];
-
-    devKeys.forEach(key => {
-      const btn = document.getElementById(`tab-btn-${key}`);
-      btn?.addEventListener('click', () => {
-        this.switchDevGame(key);
-      });
-    });
-  }
-
-  switchDevGame(key) {
-    this.pauseAllGames();
-    this.activeDevGame = key;
-    this.sound.playClick(540);
-
-    const devKeys = ['quiz', 'typer', 'hunter', 'sql', 'git', 'matrix'];
-
-    // Ẩn tất cả view casual
-    ['snake', 'defender', 'breaker', 'runner', 'flappy', '2048', 'pong', 'whack', 'tetris', 'mines'].forEach(k => {
-      document.getElementById(`game-${k}-view`)?.classList.add('hidden');
-    });
-
-    devKeys.forEach(k => {
-      const btn = document.getElementById(`tab-btn-${k}`);
-      const view = document.getElementById(`game-${k}-view`);
-      if (btn) {
-        btn.className = 'px-4 py-2 rounded-xl bg-slate-950/80 border border-white/10 text-slate-300 hover:text-white hover:border-amber-500/30 hover:bg-slate-900 font-bold transition-all inline-flex items-center gap-2 hover:scale-105';
-      }
-      if (view) view.classList.add('hidden');
-    });
-
-    const activeBtn = document.getElementById(`tab-btn-${key}`);
-    const activeView = document.getElementById(`game-${key}-view`);
-
-    const devColors = {
-      quiz: 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.4)]',
-      typer: 'bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.4)]',
-      hunter: 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-[0_0_20px_rgba(244,63,94,0.4)]',
-      sql: 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.4)]',
-      git: 'bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 shadow-[0_0_20px_rgba(249,115,22,0.4)]',
-      matrix: 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]'
-    };
-
-    if (activeBtn) {
-      const col = devColors[key] || 'bg-amber-500 text-slate-950';
-      activeBtn.className = `px-4 py-2 rounded-xl ${col} font-black transition-all inline-flex items-center gap-2 scale-105`;
-    }
-    if (activeView) {
-      activeView.classList.remove('hidden');
-    }
-
-    if (key === 'typer') {
-      const input = document.getElementById('typerInput');
-      setTimeout(() => input?.focus(), 100);
-    }
-
-    setTimeout(() => initIcons(), 50);
-  }
-
-  pauseAllGames() {
-    this.snake?.pause();
-    this.defender?.pause();
-    this.breaker?.togglePause && this.breaker.isPaused === false && this.breaker.togglePause();
-    this.runner?.stop();
-    this.flappy?.pause();
-    this.cyber2048?.pause();
-    this.pong?.pause();
-    this.whack?.pause();
-    this.tetris?.pause();
-    this.mines?.pause();
-
-    this.speedTyper?.pause();
-    this.bugHunter?.pause();
-    this.sqlForge?.pause();
-    this.gitMaster?.pause();
-  }
-
-  bindGlobalControls() {
-    window.addEventListener('keydown', (e) => {
-      const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-      if (activeTag === 'input' || activeTag === 'textarea') return;
-
-      if (e.key === 'p' || e.key === 'P') {
-        if (this.activeCategory === 'casual') {
-          if (this.activeGame === 'snake') this.snake?.togglePause();
-          else if (this.activeGame === 'defender') this.defender?.togglePause();
-          else if (this.activeGame === 'breaker') this.breaker?.togglePause();
-          else if (this.activeGame === 'flappy') this.flappy?.togglePause();
-          else if (this.activeGame === '2048') this.cyber2048?.togglePause();
-          else if (this.activeGame === 'pong') this.pong?.togglePause();
-          else if (this.activeGame === 'whack') this.whack?.togglePause();
-          else if (this.activeGame === 'tetris') this.tetris?.togglePause();
-          else if (this.activeGame === 'mines') this.mines?.togglePause();
-        } else {
-          if (this.activeDevGame === 'quiz') this.devQuiz?.togglePause();
-          else if (this.activeDevGame === 'typer') this.speedTyper?.isPaused ? this.speedTyper.resume() : this.speedTyper?.pause();
-          else if (this.activeDevGame === 'hunter') this.bugHunter?.isPaused ? this.bugHunter.resume() : this.bugHunter?.pause();
-          else if (this.activeDevGame === 'sql') this.sqlForge?.isPaused ? this.sqlForge.resume() : this.sqlForge?.pause();
-          else if (this.activeDevGame === 'git') this.gitMaster?.isPaused ? this.gitMaster.resume() : this.gitMaster?.pause();
-          else if (this.activeDevGame === 'matrix') this.memoryMatrix?.togglePause();
-        }
-      }
-    });
-  }
-
-  bindAudioControls() {
-    // Top Bar BGM Toggle
-    const bgmBtn = document.getElementById('btn-toggle-bgm');
-    const bgmLabel = document.getElementById('bgm-label');
-    const bgmIcon = document.getElementById('bgm-icon');
-
-    if (bgmBtn) {
-      bgmBtn.addEventListener('click', () => {
-        const isPlaying = this.sound.toggleBGM();
-        if (bgmLabel) {
-          bgmLabel.innerText = isPlaying ? 'BGM: Bật' : 'BGM: Tắt';
-        }
-        if (bgmIcon) {
-          bgmIcon.innerHTML = isPlaying
-            ? getIconSvg('music', 'w-3.5 h-3.5 text-emerald-400')
-            : getIconSvg('music-2', 'w-3.5 h-3.5 text-slate-400');
-        }
-      });
-    }
-
-    // SFX Sound Effects Toggle
-    const sfxBtn = document.getElementById('btn-toggle-sfx');
-    const sfxIcon = document.getElementById('sfx-icon');
-
-    if (sfxBtn) {
-      sfxBtn.addEventListener('click', () => {
-        const isMuted = this.sound.toggleMute();
-        if (sfxIcon) {
-          sfxIcon.innerHTML = isMuted
-            ? getIconSvg('volume-x', 'w-3.5 h-3.5 text-rose-400')
-            : getIconSvg('volume-2', 'w-3.5 h-3.5 text-cyan-400');
-        }
-      });
-    }
-
-    // Legacy mute button support
-    const muteBtn = document.getElementById('btn-mute');
-    if (muteBtn) {
-      muteBtn.addEventListener('click', () => {
-        const muted = this.sound.toggleMute();
-        muteBtn.innerHTML = muted
-          ? `<span class="flex items-center gap-1">${getIconSvg('volume-x', 'w-4 h-4')} <span>BẬT ÂM</span></span>`
-          : `<span class="flex items-center gap-1">${getIconSvg('volume-2', 'w-4 h-4')} <span>TẮT ÂM</span></span>`;
-      });
-    }
-
-    // Mobile navigation toggle
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    if (mobileMenuBtn && mobileMenu) {
-      mobileMenuBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-      });
-      mobileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.add('hidden');
-        });
-      });
-    }
-  }
-
-  bindBackToTop() {
-    const backToTopBtn = document.getElementById('btn-back-to-top');
-    if (backToTopBtn) {
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 400) {
-          backToTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
-          backToTopBtn.classList.add('opacity-100', 'translate-y-0');
-        } else {
-          backToTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
-          backToTopBtn.classList.remove('opacity-100', 'translate-y-0');
-        }
-      });
-
-      backToTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (this.sound && this.sound.playClick) this.sound.playClick(600);
-      });
-    }
-  }
-
-  // ==========================================
-  // HỆ THỐNG HƯỚNG DẪN CHI TIẾT 16 TRÒ CHƠI
-  // ==========================================
-  initGameGuides() {
-    const allGameKeys = [
-      'snake', 'defender', 'breaker', 'runner', 'flappy',
-      '2048', 'pong', 'whack', 'tetris', 'mines',
-      'quiz', 'typer', 'hunter', 'sql', 'git', 'matrix'
-    ];
-
-    // 1. Chèn Inline Guide Card vào từng game view
-    allGameKeys.forEach(key => {
-      const container = document.getElementById(`guide-container-${key}`);
-      if (container) {
-        container.innerHTML = getInlineGuideCardHtml(key);
-      }
-    });
-
-    // 2. Lắng nghe sự kiện click mở Modal Hướng Dẫn Hologram
-    document.addEventListener('click', (e) => {
-      const guideBtn = e.target.closest('.btn-open-guide');
-      if (guideBtn) {
-        const gameKey = guideBtn.getAttribute('data-game');
-        if (gameKey) {
-          showGameGuideModal(gameKey, this.sound);
-        }
-      }
-
-      // 3. Lắng nghe sự kiện toggle đóng/mở Inline Guide Card
-      const toggleInline = e.target.closest('.toggle-inline-guide');
-      if (toggleInline) {
-        const targetId = toggleInline.getAttribute('data-guide-target');
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-          const isHidden = targetEl.classList.toggle('hidden');
-          const arrowEl = toggleInline.querySelector('.guide-toggle-icon');
-          if (arrowEl) {
-            arrowEl.innerHTML = isHidden ? getIconSvg('chevron-down', 'w-3.5 h-3.5') : getIconSvg('chevron-up', 'w-3.5 h-3.5');
-          }
-          if (this.sound && this.sound.playClick) this.sound.playClick(480);
-        }
-      }
-    });
+    case 3: return projectPages();
+    case 4: return [`<div class="education"><span class="eyebrow">2020 — 2023</span><h3>Cao đẳng kinh tế công nghiệp Hà Nội</h3><div class="education-rule"></div><span class="eyebrow">Chuyên ngành</span><p>Công nghệ Thông tin</p></div>`];
+    default: return [];
   }
 }
 
-// Start application
-window.addEventListener('DOMContentLoaded', () => {
-  new App();
+function positionIdentity(animate = false) {
+  const before = identityElement.getBoundingClientRect();
+  identityElement.getAnimations().forEach(animation => animation.cancel());
+  const target = document.querySelector(state.section === 0 ? '.identity-home' : '.identity-anchor').getBoundingClientRect();
+  sheet.classList.toggle('is-about', state.section === 0);
+  identityElement.classList.toggle('is-compact', state.section !== 0);
+  identityElement.style.left = `${target.left}px`;
+  identityElement.style.top = `${target.top}px`;
+  if (animate && !reducedMotion.matches) {
+    const after = identityElement.getBoundingClientRect();
+    identityElement.animate([
+      { transform: `translate(${before.left - after.left}px, ${before.top - after.top}px) scale(${before.width / after.width})` },
+      { transform: 'translate(0, 0) scale(1)' },
+    ], { duration: 720, easing: 'cubic-bezier(.22,1,.36,1)' });
+  }
+}
+
+function render() {
+  const section = sections[state.section];
+  const content = pages();
+  state.page = Math.min(state.page, content.length - 1);
+  chapter.innerHTML = `${state.section === 0 ? '' : `<h2>${section.label}</h2>`}<div class="page-content">${content[state.page]}</div>`;
+  chapter.setAttribute('aria-label', section.label);
+  document.querySelector('#chapter-number').textContent = `${number(state.section + 1)} / 05`;
+  document.querySelector('#chapter-label').textContent = section.label;
+  document.querySelector('#footer-number').innerHTML = `${number(state.section + 1)} <span>/ 05</span>`;
+  document.querySelector('#previous-section').disabled = state.section === 0;
+  document.querySelector('#next-section').disabled = state.section === 4;
+  document.querySelector('.subnav').hidden = content.length === 1 && state.section !== 3;
+  document.querySelector('#subnav-label').innerHTML = state.section === 3
+    ? `<div class="project-selector"><button class="text-button" id="previous-project" aria-label="Dự án trước" ${projectIndex === 0 ? 'disabled' : ''}>${arrow(-1)}</button><span>Dự án <b>${number(projectIndex + 1)}</b> / 05</span><button class="text-button" id="next-project" aria-label="Dự án tiếp" ${projectIndex === 4 ? 'disabled' : ''}>${arrow(1)}</button></div><span class="detail-count">Chi tiết ${state.page + 1} / ${content.length}</span>`
+    : `<span>${state.section === 1 ? 'Nhóm kỹ năng' : 'Nội dung'} <b>${number(state.page + 1)}</b> / ${number(content.length)}</span>`;
+  document.querySelector('.subnav-buttons').hidden = content.length === 1;
+  document.querySelector('#previous-page').disabled = state.page === 0;
+  document.querySelector('#next-page').disabled = state.page === content.length - 1;
+  document.querySelector('#previous-project')?.addEventListener('click', () => changeProject(-1));
+  document.querySelector('#next-project')?.addEventListener('click', () => changeProject(1));
+  document.querySelector('#announcement').textContent = `${section.label}, trang ${state.page + 1} trên ${content.length}${state.section === 3 ? `, ${projects[projectIndex].title}` : ''}`;
+}
+
+function updateOrbit() {
+  const section = sections[state.section];
+  sheet.style.setProperty('--accent', section.color);
+  sheet.style.setProperty('--accent-soft', section.soft);
+  document.querySelector('.orbit-ticks').style.transform = `rotate(${state.section * -32}deg)`;
+  orbitAngles(state.section).forEach((angle, index) => {
+    const item = document.querySelector(`[data-section="${index}"]`);
+    item.style.setProperty('--angle', `${angle}deg`);
+    item.style.setProperty('--counter-angle', `${-angle}deg`);
+    item.classList.toggle('active', index === state.section);
+    if (index === state.section) item.setAttribute('aria-current', 'page');
+    else item.removeAttribute('aria-current');
+  });
+}
+
+async function transition(nextState, identityChanged = false) {
+  const id = ++transitionId;
+  state = nextState;
+  updateOrbit();
+  if (identityChanged) positionIdentity(true);
+  chapter.getAnimations().forEach(animation => animation.cancel());
+  if (!reducedMotion.matches) {
+    await chapter.animate([{ opacity: 1, transform: 'rotateY(0deg)' }, { opacity: 0, transform: 'rotateY(-14deg) translateX(-10px)' }], { duration: 190, easing: 'ease-in', fill: 'forwards' }).finished.catch(() => {});
+  }
+  if (id !== transitionId) return;
+  render();
+  chapter.getAnimations().forEach(animation => animation.cancel());
+  if (!reducedMotion.matches) chapter.animate([{ opacity: 0, transform: 'rotateY(16deg) translateX(12px)' }, { opacity: 1, transform: 'rotateY(0deg)' }], { duration: 460, easing: 'cubic-bezier(.22,1,.36,1)' });
+}
+
+function navigate(section) {
+  if (section < 0 || section >= sections.length || section === state.section) return;
+  const next = selectSection(state, section);
+  history.replaceState(null, '', `#${sections[section].id}`);
+  transition(next, true);
+}
+
+function changeProject(direction) {
+  const next = Math.max(0, Math.min(projects.length - 1, projectIndex + direction));
+  if (next === projectIndex) return;
+  projectIndex = next;
+  transition({ ...state, page: 0 });
+}
+
+document.querySelectorAll('[data-section]').forEach(button => button.addEventListener('click', () => navigate(Number(button.dataset.section))));
+document.querySelector('.monogram').addEventListener('click', event => { event.preventDefault(); navigate(0); });
+document.querySelector('#previous-section').addEventListener('click', () => navigate(state.section - 1));
+document.querySelector('#next-section').addEventListener('click', () => navigate(state.section + 1));
+document.querySelector('#previous-page').addEventListener('click', () => transition(movePage(state, -1, pages().length)));
+document.querySelector('#next-page').addEventListener('click', () => transition(movePage(state, 1, pages().length)));
+document.querySelector('.orbit').addEventListener('keydown', event => {
+  if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const next = event.key === 'Home' ? 0 : event.key === 'End' ? 4 : Math.max(0, Math.min(4, state.section + (event.key === 'ArrowDown' ? 1 : -1)));
+  navigate(next);
+  document.querySelector(`[data-section="${next}"]`).focus();
 });
+addEventListener('resize', () => { render(); positionIdentity(); });
+addEventListener('hashchange', () => {
+  const index = sections.findIndex(section => `#${section.id}` === location.hash);
+  if (index >= 0) navigate(index);
+});
+const initial = sections.findIndex(section => `#${section.id}` === location.hash);
+if (initial >= 0) state = selectSection(state, initial);
+updateOrbit();
+render();
+positionIdentity();
