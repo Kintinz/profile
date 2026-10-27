@@ -1,6 +1,9 @@
 import './style.css';
+import './theme.css';
 import logoUrl from './assets/logo-dd.svg';
-import { identity, skills, experience, projects, sections } from './content.js';
+import darkLogoUrl from './assets/logo-dd-dark.svg';
+import { getContent } from './locales.js';
+import { readPreferences, savePreferences } from './preferences.js';
 import { createState, selectSection, movePage, orbitAngles } from './navigation.js';
 import { ProfileMotion } from './motion.js';
 import { WheelGesture, isVerticalWheel } from './wheel.js';
@@ -9,6 +12,10 @@ const number = value => String(value).padStart(2, '0');
 const arrow = direction => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${direction < 0 ? 'M14 5 7 12l7 7' : 'm10 5 7 7-7 7'}"/></svg>`;
 const chips = items => `<ul class="chips">${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
 const list = items => `<ul class="work-list">${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
+const preferences = readPreferences();
+let { identity, skills, experience, projects, sections, ui } = getContent(preferences.language);
+document.documentElement.lang = preferences.language;
+document.documentElement.dataset.theme = preferences.theme;
 let state = createState();
 let transitionId = 0;
 let projectIndex = 0;
@@ -20,25 +27,35 @@ const motion = new ProfileMotion(reducedMotion);
 document.querySelector('#app').innerHTML = `
   <div class="sheet">
     <header class="header">
-      <a class="monogram" href="#about" aria-label="Dương Tiến Đạt — Về bản thân"><img src="${logoUrl}" width="68" height="38" alt="" draggable="false" /></a>
+      <a class="monogram" href="#about" aria-label="${identity.name} — ${ui.home}"><img src="${preferences.theme === 'dark' ? darkLogoUrl : logoUrl}" width="68" height="38" alt="" draggable="false" /></a>
       <span class="header-rule"></span><span class="identity-anchor" aria-hidden="true"></span>
-      <span class="header-caption">Hồ sơ cá nhân <i></i></span>
+      <span class="header-caption"><span>${ui.personalProfile}</span><i></i></span>
+      <div class="header-tools" role="group" aria-label="${ui.settings}">
+        <div class="language-switch" role="group" aria-label="${ui.language}">
+          <button type="button" data-language="vi" lang="vi" aria-label="Tiếng Việt" aria-pressed="${preferences.language === 'vi'}">VI</button>
+          <button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="${preferences.language === 'en'}">EN</button>
+        </div>
+        <button type="button" class="theme-toggle" aria-label="${preferences.theme === 'dark' ? ui.toLight : ui.toDark}" aria-pressed="${preferences.theme === 'dark'}">
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z"/></svg>
+        </button>
+      </div>
     </header>
-    <nav class="orbit" aria-label="Các mục hồ sơ">
+    <nav class="orbit" aria-label="${ui.navigation}">
       <div class="orbit-disc" aria-hidden="true"><div class="orbit-ticks"></div><div class="orbit-core"></div></div>
       ${sections.map((section, index) => `<button class="orbit-item" data-section="${index}" aria-controls="chapter" aria-label="${section.label}"><span class="orbit-node"><span class="orbit-ripple" aria-hidden="true"></span></span><span class="orbit-label"><span>${number(index + 1)}</span>${section.label}</span></button>`).join('')}
     </nav>
     <main class="main">
-      <div class="chapter-marker"><span id="chapter-number">01 / 05</span><i></i><span id="chapter-label">Về bản thân</span></div>
+      <div class="chapter-marker"><span id="chapter-number">01 / 05</span><i></i><span id="chapter-label">${sections[0].label}</span></div>
       <div class="identity-home" aria-hidden="true"></div>
-      <div class="page-stage"><section id="chapter" tabindex="-1" aria-label="Về bản thân"></section></div>
+      <div class="page-stage"><section id="chapter" tabindex="-1" aria-label="${sections[0].label}"></section></div>
       <div class="subnav" hidden>
         <div id="subnav-label"></div>
-        <div class="subnav-buttons"><button id="previous-page" class="arrow" aria-label="Trang nội dung trước">${arrow(-1)}</button><button id="next-page" class="arrow" aria-label="Trang nội dung tiếp">${arrow(1)}</button></div>
+        <div class="subnav-buttons"><button id="previous-page" class="arrow" aria-label="${ui.previousPage}">${arrow(-1)}</button><button id="next-page" class="arrow" aria-label="${ui.nextPage}">${arrow(1)}</button></div>
       </div>
       <footer class="footer">
         <address class="contacts"><a href="tel:${identity.phone}"><span aria-hidden="true">↗</span>${identity.phone}</a><a href="mailto:${identity.email}"><span aria-hidden="true">✉</span>${identity.email}</a><span><span aria-hidden="true">⌖</span>${identity.address}</span></address>
-        <div class="footer-bottom"><span class="hint">Chọn mục hoặc lăn chuột để chuyển trang</span><div class="chapter-controls"><span id="footer-number">01 <span>/ 05</span></span><button id="previous-section" class="arrow" aria-label="Mục trước">${arrow(-1)}</button><button id="next-section" class="arrow" aria-label="Mục tiếp">${arrow(1)}</button></div></div>
+        <div class="footer-bottom"><span class="hint">${ui.hint}</span><div class="chapter-controls"><span id="footer-number">01 <span>/ 05</span></span><button id="previous-section" class="arrow" aria-label="${ui.previousSection}">${arrow(-1)}</button><button id="next-section" class="arrow" aria-label="${ui.nextSection}">${arrow(1)}</button></div></div>
       </footer>
     </main>
     <div class="identity"><div class="identity-name">${identity.name}</div><div class="identity-role">.NET DEVELOPER</div></div>
@@ -51,7 +68,7 @@ const identityElement = document.querySelector('.identity');
 
 function aboutPages() {
   const goal = `<p class="goal">${identity.goal}</p>`;
-  const summary = `<div class="summary"><div><span class="eyebrow">Kinh nghiệm</span><p>Công ty Cổ phần Kids Plaza</p><small>.NET Developer · 12/2022–09/2026</small></div><div><span class="eyebrow">Chuyên môn</span><p>C#, ASP.NET Core, Entity Framework</p><small>Angular, React, Vue.js, TypeScript</small></div></div>`;
+  const summary = `<div class="summary"><div><span class="eyebrow">${ui.experience}</span><p>${ui.company}</p><small>.NET Developer · 12/2022–09/2026</small></div><div><span class="eyebrow">${ui.expertise}</span><p>C#, ASP.NET Core, Entity Framework</p><small>Angular, React, Vue.js, TypeScript</small></div></div>`;
   return innerWidth <= 600 || innerHeight < 620
     ? [`<div class="about-copy">${goal}</div>`, `<div class="about-copy">${summary}</div>`]
     : [`<div class="about-copy">${goal}${summary}</div>`];
@@ -59,12 +76,12 @@ function aboutPages() {
 
 function projectPages() {
   const project = projects[projectIndex];
-  const overview = `<h3>${project.title}</h3><p class="period">${project.period}</p><div class="project-facts"><div><span class="eyebrow">Vai trò</span><p>${project.role}</p></div><div><span class="eyebrow">${projectIndex === 4 ? 'Phối hợp' : 'Quy mô team'}</span><p>${project.team}</p></div></div><p class="description">${project.description}</p>`;
-  const result = project.result ? `<div class="result"><span class="eyebrow">Kết quả</span><p>${project.result}</p></div>` : '';
-  const tech = items => `<div class="tech"><span class="eyebrow">Công nghệ</span>${chips(items)}</div>`;
+  const overview = `<h3>${project.title}</h3><p class="period">${project.period}</p><div class="project-facts"><div><span class="eyebrow">${ui.role}</span><p>${project.role}</p></div><div><span class="eyebrow">${projectIndex === 4 ? ui.collaboration : ui.teamSize}</span><p>${project.team}</p></div></div><p class="description">${project.description}</p>`;
+  const result = project.result ? `<div class="result"><span class="eyebrow">${ui.result}</span><p>${project.result}</p></div>` : '';
+  const tech = items => `<div class="tech"><span class="eyebrow">${ui.technology}</span>${chips(items)}</div>`;
   if (innerHeight < 520 && innerWidth > 600) {
     const heading = `<h3>${project.title}</h3><p class="period">${project.period}</p>`;
-    const facts = `<div class="project-facts"><div><span class="eyebrow">Vai trò</span><p>${project.role}</p></div><div><span class="eyebrow">${projectIndex === 4 ? 'Phối hợp' : 'Quy mô team'}</span><p>${project.team}</p></div></div>`;
+    const facts = `<div class="project-facts"><div><span class="eyebrow">${ui.role}</span><p>${project.role}</p></div><div><span class="eyebrow">${projectIndex === 4 ? ui.collaboration : ui.teamSize}</span><p>${project.team}</p></div></div>`;
     const detailPages = project.parts
       ? project.parts.flatMap(part => [ ...part.work.map(work => `<h3>${part.title}</h3>${list([work])}`), `<h3>${part.title}</h3>${tech(part.tech)}` ])
       : [...(project.work || []).map(work => list([work])), ...(result ? [result] : []), tech(project.tech)];
@@ -82,10 +99,10 @@ function pages() {
     case 1: return skills.map((skill, index) => `<div class="skill-group"><span class="eyebrow">${number(index + 1)} / 04</span><h3>${skill.title}</h3>${chips(skill.items)}</div>`);
     case 2: {
       const chunk = innerHeight < 520 ? 1 : innerWidth <= 600 || innerHeight < 700 ? 2 : 3;
-      return Array.from({ length: Math.ceil(experience.length / chunk) }, (_, index) => `<h3>Công ty Cổ phần Kids Plaza</h3><p class="period">12/2022–09/2026</p><div class="job-role">.NET Developer</div>${list(experience.slice(index * chunk, (index + 1) * chunk))}`);
+      return Array.from({ length: Math.ceil(experience.length / chunk) }, (_, index) => `<h3>${ui.company}</h3><p class="period">12/2022–09/2026</p><div class="job-role">.NET Developer</div>${list(experience.slice(index * chunk, (index + 1) * chunk))}`);
     }
     case 3: return projectPages();
-    case 4: return [`<div class="education"><span class="eyebrow">2020 — 2023</span><h3>Cao đẳng kinh tế công nghiệp Hà Nội</h3><div class="education-rule"></div><span class="eyebrow">Chuyên ngành</span><p>Công nghệ Thông tin</p></div>`];
+    case 4: return [`<div class="education"><span class="eyebrow">2020 — 2023</span><h3>${ui.school}</h3><div class="education-rule"></div><span class="eyebrow">${ui.major}</span><p>${ui.subject}</p></div>`];
     default: return [];
   }
 }
@@ -120,20 +137,22 @@ function render() {
   document.querySelector('#next-section').disabled = state.section === 4;
   document.querySelector('.subnav').hidden = content.length === 1 && state.section !== 3;
   document.querySelector('#subnav-label').innerHTML = state.section === 3
-    ? `<div class="project-selector"><button class="text-button" id="previous-project" aria-label="Dự án trước" ${projectIndex === 0 ? 'disabled' : ''}>${arrow(-1)}</button><span>Dự án <b>${number(projectIndex + 1)}</b> / 05</span><button class="text-button" id="next-project" aria-label="Dự án tiếp" ${projectIndex === 4 ? 'disabled' : ''}>${arrow(1)}</button></div><span class="detail-count">Chi tiết ${state.page + 1} / ${content.length}</span>`
-    : `<span>${state.section === 1 ? 'Nhóm kỹ năng' : 'Nội dung'} <b>${number(state.page + 1)}</b> / ${number(content.length)}</span>`;
+    ? `<div class="project-selector"><button class="text-button" id="previous-project" aria-label="${ui.previousProject}" ${projectIndex === 0 ? 'disabled' : ''}>${arrow(-1)}</button><span>${ui.project} <b>${number(projectIndex + 1)}</b> / 05</span><button class="text-button" id="next-project" aria-label="${ui.nextProject}" ${projectIndex === 4 ? 'disabled' : ''}>${arrow(1)}</button></div><span class="detail-count">${ui.detail} ${state.page + 1} / ${content.length}</span>`
+    : `<span>${state.section === 1 ? ui.skillGroup : ui.content} <b>${number(state.page + 1)}</b> / ${number(content.length)}</span>`;
   document.querySelector('.subnav-buttons').hidden = content.length === 1;
   document.querySelector('#previous-page').disabled = state.page === 0;
   document.querySelector('#next-page').disabled = state.page === content.length - 1;
   document.querySelector('#previous-project')?.addEventListener('click', () => changeProject(-1));
   document.querySelector('#next-project')?.addEventListener('click', () => changeProject(1));
-  document.querySelector('#announcement').textContent = `${section.label}, trang ${state.page + 1} trên ${content.length}${state.section === 3 ? `, ${projects[projectIndex].title}` : ''}`;
+  document.querySelector('#announcement').textContent = `${section.label}, ${ui.page} ${state.page + 1} ${ui.of} ${content.length}${state.section === 3 ? `, ${projects[projectIndex].title}` : ''}`;
 }
 
 function updateOrbit() {
   const section = sections[state.section];
-  sheet.style.setProperty('--accent', section.color);
-  sheet.style.setProperty('--accent-soft', section.soft);
+  const darkAccents = ['#59c5be', '#83b7f4', '#baa5f0', '#eaa17d', '#b1c77a'];
+  const darkSurfaces = ['#153c3d', '#1d324d', '#352b4d', '#432c25', '#303b24'];
+  sheet.style.setProperty('--accent', preferences.theme === 'dark' ? darkAccents[state.section] : section.color);
+  sheet.style.setProperty('--accent-soft', preferences.theme === 'dark' ? darkSurfaces[state.section] : section.soft);
   document.querySelector('.orbit-ticks').style.transform = `rotate(${state.section * -32}deg)`;
   orbitAngles(state.section).forEach((angle, index) => {
     const item = document.querySelector(`[data-section="${index}"]`);
@@ -143,6 +162,45 @@ function updateOrbit() {
     if (index === state.section) item.setAttribute('aria-current', 'page');
     else item.removeAttribute('aria-current');
   });
+}
+
+function updatePreferenceLabels() {
+  document.querySelector('.header-caption > span').textContent = ui.personalProfile;
+  document.querySelector('.header-tools').setAttribute('aria-label', ui.settings);
+  document.querySelector('.language-switch').setAttribute('aria-label', ui.language);
+  document.querySelector('.orbit').setAttribute('aria-label', ui.navigation);
+  document.querySelector('.monogram').setAttribute('aria-label', `${identity.name} — ${ui.home}`);
+  document.querySelector('.monogram img').src = preferences.theme === 'dark' ? darkLogoUrl : logoUrl;
+  document.querySelector('.hint').textContent = ui.hint;
+  const themeButton = document.querySelector('.theme-toggle');
+  themeButton.setAttribute('aria-label', preferences.theme === 'dark' ? ui.toLight : ui.toDark);
+  themeButton.title = preferences.theme === 'dark' ? ui.toLight : ui.toDark;
+  themeButton.setAttribute('aria-pressed', String(preferences.theme === 'dark'));
+  document.querySelectorAll('[data-language]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.language === preferences.language)));
+  for (const [id, label] of Object.entries({ 'previous-page': ui.previousPage, 'next-page': ui.nextPage, 'previous-section': ui.previousSection, 'next-section': ui.nextSection })) {
+    document.getElementById(id).setAttribute('aria-label', label);
+  }
+  sections.forEach((section, index) => {
+    const button = document.querySelector(`[data-section="${index}"]`);
+    button.setAttribute('aria-label', section.label);
+    button.querySelector('.orbit-label').innerHTML = `<span>${number(index + 1)}</span>${section.label}`;
+  });
+}
+
+function changePreferences(next) {
+  const id = ++transitionId;
+  isTransitioning = true;
+  Object.assign(preferences, next);
+  ({ identity, skills, experience, projects, sections, ui } = getContent(preferences.language));
+  motion.stop();
+  document.documentElement.lang = preferences.language;
+  document.documentElement.dataset.theme = preferences.theme;
+  updatePreferenceLabels();
+  updateOrbit();
+  render();
+  positionIdentity();
+  savePreferences(preferences);
+  finishTransition(id);
 }
 
 async function finishTransition(id) {
@@ -194,6 +252,10 @@ document.querySelectorAll('[data-section]').forEach(button => button.addEventLis
   navigate(Number(button.dataset.section));
 }));
 document.querySelector('.monogram').addEventListener('click', event => { event.preventDefault(); navigate(0); });
+document.querySelectorAll('[data-language]').forEach(button => button.addEventListener('click', () => {
+  if (button.dataset.language !== preferences.language) changePreferences({ language: button.dataset.language });
+}));
+document.querySelector('.theme-toggle').addEventListener('click', () => changePreferences({ theme: preferences.theme === 'light' ? 'dark' : 'light' }));
 document.querySelector('#previous-section').addEventListener('click', () => navigate(state.section - 1));
 document.querySelector('#next-section').addEventListener('click', () => navigate(state.section + 1));
 document.querySelector('#previous-page').addEventListener('click', () => transition(movePage(state, -1, pages().length)));
@@ -229,6 +291,7 @@ addEventListener('hashchange', () => {
 });
 const initial = sections.findIndex(section => `#${section.id}` === location.hash);
 if (initial >= 0) state = selectSection(state, initial);
+updatePreferenceLabels();
 updateOrbit();
 render();
 positionIdentity();
