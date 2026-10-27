@@ -21,6 +21,7 @@ const url = process.argv[3] || 'http://127.0.0.1:4173/profile/';
       await page.setViewportSize(viewport);
       await page.goto(url);
       await page.evaluate(() => document.fonts.ready);
+      assert.ok(await page.locator('.monogram img').evaluate(image => image.complete && image.naturalWidth > 0), 'header logo should load at the Pages base path');
       for (let section = 0; section < 5; section++) {
         await page.locator(`[data-section="${section}"] .orbit-label`).click();
         assert.equal(await page.locator('[aria-current="page"]').getAttribute('data-section'), String(section));
@@ -70,6 +71,11 @@ const url = process.argv[3] || 'http://127.0.0.1:4173/profile/';
     await page.keyboard.press('Home');
     await page.waitForTimeout(850);
     assert.equal(await page.locator('[aria-current="page"]').getAttribute('data-section'), '0');
+    await page.locator('[data-section="3"] .orbit-label').click();
+    await page.waitForTimeout(850);
+    await page.getByRole('link', { name: 'Dương Tiến Đạt — Về bản thân', exact: true }).click();
+    await page.waitForTimeout(850);
+    assert.equal(await page.locator('#chapter').getAttribute('aria-label'), 'Về bản thân');
     assert.deepEqual(errors, []);
     console.log(`PASS: ${verifiedPages} content states across ${viewports.length} viewports; identity motion, interrupted navigation, keyboard and reduced motion; no page errors.`);
   } finally {

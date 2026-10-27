@@ -1,4 +1,5 @@
 import './style.css';
+import logoUrl from './assets/logo-dd.svg';
 import { identity, skills, experience, projects, sections } from './content.js';
 import { createState, selectSection, movePage, orbitAngles } from './navigation.js';
 import { ProfileMotion } from './motion.js';
@@ -16,7 +17,7 @@ const motion = new ProfileMotion(reducedMotion);
 document.querySelector('#app').innerHTML = `
   <div class="sheet">
     <header class="header">
-      <a class="monogram" href="#about" aria-label="Dương Tiến Đạt — Về bản thân">DĐ</a>
+      <a class="monogram" href="#about" aria-label="Dương Tiến Đạt — Về bản thân"><img src="${logoUrl}" width="68" height="38" alt="" draggable="false" /></a>
       <span class="header-rule"></span><span class="identity-anchor" aria-hidden="true"></span>
       <span class="header-caption">Hồ sơ cá nhân <i></i></span>
     </header>

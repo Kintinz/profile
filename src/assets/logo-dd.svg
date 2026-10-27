@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 202 110" fill="none">
+  <title>DĐ</title>
+  <g fill="#0c203f" fill-rule="evenodd" clip-rule="evenodd">
+    <path d="M12 7h35c33 0 48 19 48 48s-15 48-48 48H12a5 5 0 0 1-5-5V12a5 5 0 0 1 5-5Zm13 17v62h21c21 0 31-12 31-31S67 24 46 24H25Z"/>
+    <path d="M110 7h35c33 0 48 19 48 48s-15 48-48 48h-35a5 5 0 0 1-5-5V12a5 5 0 0 1 5-5Zm13 17v62h21c21 0 31-12 31-31s-10-31-31-31h-21Z"/>
+  </g>
+  <rect x="98" y="44" width="48" height="14" rx="6" fill="#157d79"/>
+</svg>
