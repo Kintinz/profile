@@ -1,6 +1,7 @@
 import './style.css';
 import { identity, skills, experience, projects, sections } from './content.js';
 import { createState, selectSection, movePage, orbitAngles } from './navigation.js';
+import { ProfileMotion } from './motion.js';
 
 const number = value => String(value).padStart(2, '0');
 const arrow = direction => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${direction < 0 ? 'M14 5 7 12l7 7' : 'm10 5 7 7-7 7'}"/></svg>`;
@@ -10,6 +11,7 @@ let state = createState();
 let transitionId = 0;
 let projectIndex = 0;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const motion = new ProfileMotion(reducedMotion);
 
 document.querySelector('#app').innerHTML = `
   <div class="sheet">
@@ -20,7 +22,7 @@ document.querySelector('#app').innerHTML = `
     </header>
     <nav class="orbit" aria-label="Các mục hồ sơ">
       <div class="orbit-disc" aria-hidden="true"><div class="orbit-ticks"></div><div class="orbit-core"></div></div>
-      ${sections.map((section, index) => `<button class="orbit-item" data-section="${index}" aria-controls="chapter" aria-label="${section.label}"><span class="orbit-node"></span><span class="orbit-label"><span>${number(index + 1)}</span>${section.label}</span></button>`).join('')}
+      ${sections.map((section, index) => `<button class="orbit-item" data-section="${index}" aria-controls="chapter" aria-label="${section.label}"><span class="orbit-node"><span class="orbit-ripple" aria-hidden="true"></span></span><span class="orbit-label"><span>${number(index + 1)}</span>${section.label}</span></button>`).join('')}
     </nav>
     <main class="main">
       <div class="chapter-marker"><span id="chapter-number">01 / 05</span><i></i><span id="chapter-label">Về bản thân</span></div>
@@ -86,7 +88,7 @@ function pages() {
 
 function positionIdentity(animate = false) {
   const before = identityElement.getBoundingClientRect();
-  identityElement.getAnimations().forEach(animation => animation.cancel());
+  motion.cancel(identityElement);
   const target = document.querySelector(state.section === 0 ? '.identity-home' : '.identity-anchor').getBoundingClientRect();
   sheet.classList.toggle('is-about', state.section === 0);
   identityElement.classList.toggle('is-compact', state.section !== 0);
@@ -94,10 +96,10 @@ function positionIdentity(animate = false) {
   identityElement.style.top = `${target.top}px`;
   if (animate && !reducedMotion.matches) {
     const after = identityElement.getBoundingClientRect();
-    identityElement.animate([
+    motion.play(identityElement, [
       { transform: `translate(${before.left - after.left}px, ${before.top - after.top}px) scale(${before.width / after.width})` },
       { transform: 'translate(0, 0) scale(1)' },
-    ], { duration: 720, easing: 'cubic-bezier(.22,1,.36,1)' });
+    ], { duration: 680 });
   }
 }
 
@@ -144,14 +146,22 @@ async function transition(nextState, identityChanged = false) {
   state = nextState;
   updateOrbit();
   if (identityChanged) positionIdentity(true);
-  chapter.getAnimations().forEach(animation => animation.cancel());
+  motion.cancel(chapter, true);
   if (!reducedMotion.matches) {
-    await chapter.animate([{ opacity: 1, transform: 'rotateY(0deg)' }, { opacity: 0, transform: 'rotateY(-14deg) translateX(-10px)' }], { duration: 190, easing: 'ease-in', fill: 'forwards' }).finished.catch(() => {});
+    const outgoing = motion.play(chapter, [
+      { opacity: 1, transform: 'rotateY(0deg)', boxShadow: '0 0 0 rgba(12,32,63,0)' },
+      { opacity: 0, transform: 'rotateY(-20deg) translateX(-8px)', boxShadow: '16px 3px 24px -15px rgba(12,32,63,.16)' },
+    ], { duration: 180, easing: 'ease-in', fill: 'forwards' });
+    await outgoing.finished.catch(() => {});
   }
   if (id !== transitionId) return;
   render();
-  chapter.getAnimations().forEach(animation => animation.cancel());
-  if (!reducedMotion.matches) chapter.animate([{ opacity: 0, transform: 'rotateY(16deg) translateX(12px)' }, { opacity: 1, transform: 'rotateY(0deg)' }], { duration: 460, easing: 'cubic-bezier(.22,1,.36,1)' });
+  motion.cancel(chapter, true);
+  motion.play(chapter, [
+    { opacity: 0, transform: 'rotateY(18deg) translateX(10px)', boxShadow: '-14px 3px 22px -14px rgba(12,32,63,.14)' },
+    { opacity: 1, transform: 'rotateY(0deg)', boxShadow: '0 0 0 rgba(12,32,63,0)' },
+  ], { duration: 450 });
+  motion.reveal(chapter);
 }
 
 function navigate(section) {
@@ -168,7 +178,10 @@ function changeProject(direction) {
   transition({ ...state, page: 0 });
 }
 
-document.querySelectorAll('[data-section]').forEach(button => button.addEventListener('click', () => navigate(Number(button.dataset.section))));
+document.querySelectorAll('[data-section]').forEach(button => button.addEventListener('click', () => {
+  motion.pulse(button);
+  navigate(Number(button.dataset.section));
+}));
 document.querySelector('.monogram').addEventListener('click', event => { event.preventDefault(); navigate(0); });
 document.querySelector('#previous-section').addEventListener('click', () => navigate(state.section - 1));
 document.querySelector('#next-section').addEventListener('click', () => navigate(state.section + 1));
@@ -181,7 +194,13 @@ document.querySelector('.orbit').addEventListener('keydown', event => {
   navigate(next);
   document.querySelector(`[data-section="${next}"]`).focus();
 });
-addEventListener('resize', () => { render(); positionIdentity(); });
+addEventListener('resize', () => { motion.cancel(chapter, true); render(); positionIdentity(); });
+reducedMotion.addEventListener('change', () => {
+  ++transitionId;
+  motion.stop();
+  render();
+  positionIdentity();
+});
 addEventListener('hashchange', () => {
   const index = sections.findIndex(section => `#${section.id}` === location.hash);
   if (index >= 0) navigate(index);
@@ -191,3 +210,4 @@ if (initial >= 0) state = selectSection(state, initial);
 updateOrbit();
 render();
 positionIdentity();
+motion.enter(identityElement, document.querySelector('.orbit-disc'), chapter, document.querySelector('.chapter-marker'), document.querySelector('.footer'));
